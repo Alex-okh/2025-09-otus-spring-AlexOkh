@@ -3,20 +3,22 @@ package ru.otus.hw.service;
 import lombok.RequiredArgsConstructor;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Question;
-import java.util.Scanner;
 
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
     private final IOService ioService;
+
+    private final InputService inputService;
+
     private final QuestionDao questionDao;
 
     @Override
     public void executeTest() {
-        ioService.printLine("");
-        ioService.printFormattedLine("Please answer the questions below:");
         var questions = questionDao.findAll();
         int score = 0;
+        ioService.printLine("");
+        ioService.printFormattedLine("Please answer the questions below:");
         for (var q : questions) {
             if (askQuestion(q)) {
                 score++;
@@ -42,7 +44,7 @@ public class TestServiceImpl implements TestService {
             if (question.answers()
                         .get(i)
                         .isCorrect()) {
-                correctAnswerNumber = i+1;
+                correctAnswerNumber = i + 1;
             }
         }
         ioService.printLine("");
@@ -51,8 +53,6 @@ public class TestServiceImpl implements TestService {
     }
 
     private int getAnswerNumber() {
-        Scanner sc = new Scanner(System.in);
-        return sc.nextInt();
-
+       return inputService.getInt();
     }
 }
