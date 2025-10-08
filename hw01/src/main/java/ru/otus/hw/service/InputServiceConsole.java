@@ -3,7 +3,7 @@ package ru.otus.hw.service;
 import java.util.Scanner;
 
 public class InputServiceConsole implements InputService {
-    Scanner scanner;
+    private final Scanner scanner;
 
     public InputServiceConsole() {
         scanner = new Scanner(System.in);

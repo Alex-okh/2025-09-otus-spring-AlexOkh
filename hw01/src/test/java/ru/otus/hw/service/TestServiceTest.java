@@ -41,7 +41,9 @@ class TestServiceTest {
         when(inputService.getInt()).thenReturn(1);
 
         testService.executeTest();
+        verify(inputService, times(2)).getInt();
         verify(ioService, times(10)).printLine(anyString());
+        verify(ioService, times(5)).printFormattedLine(anyString());
         verify(ioService).printLine("Your score is 1 of 2");
     }
 }
