@@ -38,12 +38,9 @@ public class TestServiceImpl implements TestService {
         int correctAnswerNumber = 0;
         for (int i = 0; i < question.answers()
                                     .size(); i++) {
-            ioService.printLine((i + 1) + ". " + question.answers()
-                                                         .get(i)
-                                                         .text());
-            if (question.answers()
-                        .get(i)
-                        .isCorrect()) {
+            var answer = question.answers().get(i);
+            ioService.printLine((i + 1) + ". " + answer.text());
+            if (answer.isCorrect()) {
                 correctAnswerNumber = i + 1;
             }
         }
