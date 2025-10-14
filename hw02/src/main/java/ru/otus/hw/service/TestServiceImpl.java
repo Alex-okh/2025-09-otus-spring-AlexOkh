@@ -48,10 +48,10 @@ public class TestServiceImpl implements TestService {
         }
         ioService.printLine("");
         ioService.printFormattedLine("Enter answer number:");
-        return correctAnswerNumber == getAnswerNumber();
+        return correctAnswerNumber == getAnswerNumber(1,question.answers().size());
     }
 
-    private int getAnswerNumber() {
-        return ioService.readIntForRange(1,5,"No such an option");
+    private int getAnswerNumber(int lowerBound, int upperBound) {
+        return ioService.readIntForRange(lowerBound,upperBound,"No such an option");
     }
 }
