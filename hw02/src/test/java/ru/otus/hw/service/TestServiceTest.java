@@ -19,7 +19,6 @@ class TestServiceTest {
     private final String TEST_FIRSTNAME = "<Student firstname>";
     private final String TEST_LASTNAME = "<Student lastname>";
 
-
     @Mock
     private IOService ioService;
 
@@ -33,20 +32,17 @@ class TestServiceTest {
     @DisplayName("Должен считать результат")
     void testRunTest() {
         List<Question> testQuestions = List.of(
-                new Question("Questiion 1", List.of(
-                        new Answer("Answer1", true),
-                        new Answer("Answer2", false))),
-                new Question("Questiion 2", List.of(
-                        new Answer("Answer1-2", false),
-                        new Answer("Answer2-2", true))));
+                new Question("Questiion 1", List.of(new Answer("Answer1", true), new Answer("Answer2", false))),
+                new Question("Questiion 2", List.of(new Answer("Answer1-2", false), new Answer("Answer2-2", true))));
         when(questionDao.findAll()).thenReturn(testQuestions);
-        when(ioService.readIntForRange(anyInt(),anyInt(),anyString())).thenReturn(1);
+        when(ioService.readIntForRange(anyInt(), anyInt(), anyString())).thenReturn(1);
 
         var testResult = testService.executeTestFor(new Student(TEST_FIRSTNAME, TEST_LASTNAME));
 
         assertThat(testResult.getRightAnswersCount()).isEqualTo(1);
-        assertThat(testResult.getAnsweredQuestions().size()).isEqualTo(2);
-        assertThat(testResult.getStudent().getFullName()).isEqualTo("<Student firstname> <Student lastname>");
+        assertThat(testResult.getAnsweredQuestions()).hasSize(2);
+        assertThat(testResult.getStudent()
+                             .getFullName()).isEqualTo("<Student firstname> <Student lastname>");
 
     }
 }

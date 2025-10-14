@@ -17,8 +17,10 @@ public class ResultServiceImpl implements ResultService {
     public void showResult(TestResult testResult) {
         ioService.printLine("");
         ioService.printLine("Test results: ");
-        ioService.printFormattedLine("Student: %s", testResult.getStudent().getFullName());
-        ioService.printFormattedLine("Answered questions count: %d", testResult.getAnsweredQuestions().size());
+        ioService.printFormattedLine("Student: %s", testResult.getStudent()
+                                                              .getFullName());
+        ioService.printFormattedLine("Answered questions count: %d", testResult.getAnsweredQuestions()
+                                                                               .size());
         ioService.printFormattedLine("Right answers count: %d", testResult.getRightAnswersCount());
 
         if (testResult.getRightAnswersCount() >= testConfig.getRightAnswersCountToPass()) {

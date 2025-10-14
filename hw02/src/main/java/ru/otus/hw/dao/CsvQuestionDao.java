@@ -10,12 +10,10 @@ import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -29,12 +27,12 @@ public class CsvQuestionDao implements QuestionDao {
     public List<Question> findAll() {
         Resource resource = resourceLoader.getResource(fileNameProvider.getTestFileName());
         try (Reader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            CsvToBean<QuestionDto> csvToBean =
-                    new CsvToBeanBuilder<QuestionDto>(reader).withType(QuestionDto.class)
-                                                             .withSeparator(';')
-                                                             .withSkipLines(1)
-                                                             .withIgnoreLeadingWhiteSpace(true)
-                                                             .build();
+            CsvToBean<QuestionDto> csvToBean = new CsvToBeanBuilder<QuestionDto>(reader).withType(QuestionDto.class)
+                                                                                        .withSeparator(';')
+                                                                                        .withSkipLines(1)
+                                                                                        .withIgnoreLeadingWhiteSpace(
+                                                                                                true)
+                                                                                        .build();
             return csvToBean.stream()
                             .map(QuestionDto::toDomainObject)
                             .toList();

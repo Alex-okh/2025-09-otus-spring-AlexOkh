@@ -22,7 +22,7 @@ public class TestServiceImpl implements TestService {
         var questions = questionDao.findAll();
         var testResult = new TestResult(student);
 
-        for (var question: questions) {
+        for (var question : questions) {
             var isAnswerValid = askQuestion(question); // Задать вопрос, получить ответ
             testResult.applyAnswer(question, isAnswerValid);
         }
@@ -40,7 +40,8 @@ public class TestServiceImpl implements TestService {
         int correctAnswerNumber = 0;
         for (int i = 0; i < question.answers()
                                     .size(); i++) {
-            var answer = question.answers().get(i);
+            var answer = question.answers()
+                                 .get(i);
             ioService.printLine((i + 1) + ". " + answer.text());
             if (answer.isCorrect()) {
                 correctAnswerNumber = i + 1;
@@ -48,10 +49,11 @@ public class TestServiceImpl implements TestService {
         }
         ioService.printLine("");
         ioService.printFormattedLine("Enter answer number:");
-        return correctAnswerNumber == getAnswerNumber(1,question.answers().size());
+        return correctAnswerNumber == getAnswerNumber(1, question.answers()
+                                                                 .size());
     }
 
     private int getAnswerNumber(int lowerBound, int upperBound) {
-        return ioService.readIntForRange(lowerBound,upperBound,"No such an option");
+        return ioService.readIntForRange(lowerBound, upperBound, "No such an option");
     }
 }
