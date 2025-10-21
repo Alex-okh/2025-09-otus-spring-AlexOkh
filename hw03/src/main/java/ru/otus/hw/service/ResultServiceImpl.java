@@ -17,12 +17,12 @@ public class ResultServiceImpl implements ResultService {
     public void showResult(TestResult testResult) {
         ioService.printLine("");
         ioService.printLineLocalized("ResultService.test.results");
-        ioService.printFormattedLineLocalized("ResultService.student",
-                testResult.getStudent().getFullName());
+        ioService.printFormattedLineLocalized("ResultService.student", testResult.getStudent()
+                                                                                 .getFullName());
         ioService.printFormattedLineLocalized("ResultService.answered.questions.count",
-                testResult.getAnsweredQuestions().size());
-        ioService.printFormattedLineLocalized("ResultService.right.answers.count",
-                testResult.getRightAnswersCount());
+                                              testResult.getAnsweredQuestions()
+                                                        .size());
+        ioService.printFormattedLineLocalized("ResultService.right.answers.count", testResult.getRightAnswersCount());
 
         if (testResult.getRightAnswersCount() >= testConfig.getRightAnswersCountToPass()) {
             ioService.printLineLocalized("ResultService.passed.test");
