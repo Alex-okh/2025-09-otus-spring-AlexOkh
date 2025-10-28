@@ -25,3 +25,5 @@ target/
 
 *.class
 *.mvn
+Spring Shell.log
+

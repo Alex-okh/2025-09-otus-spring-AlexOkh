@@ -2,13 +2,19 @@ package ru.otus.hw.runner;
 
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
-import ru.otus.hw.service.*;
+import ru.otus.hw.service.LocalizedMessagesService;
+import ru.otus.hw.service.RegisterContext;
+import ru.otus.hw.service.StudentService;
+import ru.otus.hw.service.TestRunnerService;
 
 @Command(group = "Test application commands")
 public class AppRunner {
     private final TestRunnerService testRunnerService;
+
     private final LocalizedMessagesService localizedMessagesService;
+
     private final StudentService studentService;
+
     private final RegisterContext registerContext;
 
     public AppRunner(TestRunnerService testRunnerService, LocalizedMessagesService localizedMessagesService,
@@ -34,10 +40,17 @@ public class AppRunner {
 
     @Command(description = "Information", command = "i", alias = "info")
     public String showInfo() {
-        String header = localizedMessagesService.getMessage("ShellCommands.infoHeader");
-        String studentHeader = localizedMessagesService.getMessage("ShellCommands.studentHeader");
-        String student = registerContext.isStudentRegistered() ? registerContext.getStudent()
-                                                                                .getFullName() : localizedMessagesService.getMessage(
+        return constructInfoString();
+    }
+
+    private String constructInfoString() {
+        String header = localizedMessagesService.getMessage(
+                "ShellCommands.infoHeader");
+        String studentHeader = localizedMessagesService.getMessage(
+                "ShellCommands.studentHeader");
+        String student = registerContext.isStudentRegistered()
+                ? registerContext.getStudent().getFullName()
+                : localizedMessagesService.getMessage(
                 "ShellCommands.infoNobodyRegistered");
         return """
                 %s
