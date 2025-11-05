@@ -1,5 +1,6 @@
 package ru.otus.hw.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,8 +25,8 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class CsvQuestionDaoTest {
-    static final String TEST_FILE_NAME = "test.csv";
-    static final String TEST_FILE_CONTENT = """
+    private static final String TEST_FILE_NAME = "test.csv";
+    private static final String TEST_FILE_CONTENT = """
             первая строка пропускается
             Question1?;correct answer%true|incorrect1%false|incorrect2%false
             Question2?;incorrect1%false|correct%true|incorrect2%false|incorrect3%false
@@ -40,11 +41,15 @@ class CsvQuestionDaoTest {
     @Autowired
     private CsvQuestionDao csvQuestionDao;
 
+    @BeforeEach
+    void setUp() {
+        when(fileNameProvider.getTestFileName()).thenReturn(TEST_FILE_NAME);
+        when(resourceLoader.getResource(TEST_FILE_NAME)).thenReturn(resource);
+    }
+
     @Test
     @DisplayName("Должен прочитать корректные данные")
     void csvQuestionDao_GoodTest() throws IOException {
-        when(fileNameProvider.getTestFileName()).thenReturn(TEST_FILE_NAME);
-        when(resourceLoader.getResource(TEST_FILE_NAME)).thenReturn(resource);
         when(resource.getInputStream()).thenReturn(new ByteArrayInputStream(TEST_FILE_CONTENT.getBytes()));
 
         List<Question> readQuestions = csvQuestionDao.findAll();
@@ -65,8 +70,6 @@ class CsvQuestionDaoTest {
     @Test
     @DisplayName("Должен выбросить исключение при ошибке ввода-вывода")
     void csvQuestionDao_BadTest() throws IOException {
-        when(fileNameProvider.getTestFileName()).thenReturn(TEST_FILE_NAME);
-        when(resourceLoader.getResource(TEST_FILE_NAME)).thenReturn(resource);
         when(resource.getInputStream()).thenThrow(new IOException());
 
         assertThatThrownBy(() -> csvQuestionDao.findAll()).isInstanceOf(QuestionReadException.class);
@@ -77,7 +80,7 @@ class CsvQuestionDaoTest {
     static class TestConfig {
         @Bean
         @Primary
-        public ResourceLoader resourceLoader()  {
+        public ResourceLoader resourceLoader() {
             return Mockito.mock(ResourceLoader.class);
         }
     }
