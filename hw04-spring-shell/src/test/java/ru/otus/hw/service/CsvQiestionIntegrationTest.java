@@ -1,13 +1,11 @@
 package ru.otus.hw.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.dao.CsvQuestionDao;
 import ru.otus.hw.domain.Question;
@@ -18,22 +16,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@TestPropertySource(properties = "spring.shell.interactive.enabled=false")
+@SpringBootTest(classes = {CsvQuestionDao.class, ResourceLoader.class})
 class CsvQiestionIntegrationTest {
     static final String BAD_TEST_FILE_NAME = "test.csv";
     static final String REAL_TEST_FILE_NAME = "questions.csv";
 
-    @Mock
+    @MockitoBean
     private TestFileNameProvider fileNameProvider;
 
+    @Autowired
     private CsvQuestionDao csvQuestionDao;
-
-    @BeforeEach
-    void setUp() {
-        ResourceLoader resourceLoader = new DefaultResourceLoader();
-        csvQuestionDao = new CsvQuestionDao(fileNameProvider, resourceLoader);
-    }
 
     @Test
     @DisplayName("Должен прочитать корректные данные")

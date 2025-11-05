@@ -11,9 +11,9 @@ import ru.otus.hw.service.RegisterContext;
 public class ShellConfig {
 
     @Bean
-    public AvailabilityProvider shellAvailabilityProvider(RegisterContext registerContextContext,
+    public AvailabilityProvider shellAvailabilityProvider(RegisterContext registerContext,
                                                           LocalizedMessagesService messageService) {
-        return () -> registerContextContext.isStudentRegistered() ? Availability.available() : Availability.unavailable(
+        return () -> registerContext.isStudentRegistered() ? Availability.available() : Availability.unavailable(
                 messageService.getMessage("Shelcommands.unregistered"));
     }
 }

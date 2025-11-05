@@ -2,10 +2,9 @@ package ru.otus.hw.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
@@ -14,19 +13,18 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@TestPropertySource(properties = "spring.shell.interactive.enabled=false")
+@SpringBootTest(classes = TestServiceImpl.class)
 class TestServiceTest {
     private final String TEST_FIRSTNAME = "<Student firstname>";
     private final String TEST_LASTNAME = "<Student lastname>";
 
-    @Mock
+    @MockitoBean
     private LocalizedIOService ioService;
 
-    @Mock
+    @MockitoBean
     private QuestionDao questionDao;
 
-    @InjectMocks
+    @Autowired
     private TestServiceImpl testService;
 
     @Test

@@ -2,13 +2,16 @@ package ru.otus.hw.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.context.TestPropertySource;
-import ru.otus.hw.config.TestFileNameProvider;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import ru.otus.hw.config.AppProperties;
 import ru.otus.hw.dao.CsvQuestionDao;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
@@ -20,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@TestPropertySource(properties = "spring.shell.interactive.enabled=false")
 class CsvQuestionDaoTest {
     static final String TEST_FILE_NAME = "test.csv";
     static final String TEST_FILE_CONTENT = """
@@ -29,13 +31,13 @@ class CsvQuestionDaoTest {
             Question2?;incorrect1%false|correct%true|incorrect2%false|incorrect3%false
             """;
 
-    @Mock
-    Resource resource;
-    @Mock
-    private TestFileNameProvider fileNameProvider;
-    @Mock
+    @MockitoBean
+    private Resource resource;
+    @MockitoBean
+    private AppProperties fileNameProvider;
+    @MockitoBean
     private ResourceLoader resourceLoader;
-    @InjectMocks
+    @Autowired
     private CsvQuestionDao csvQuestionDao;
 
     @Test
@@ -69,6 +71,15 @@ class CsvQuestionDaoTest {
 
         assertThatThrownBy(() -> csvQuestionDao.findAll()).isInstanceOf(QuestionReadException.class);
 
+    }
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        @Primary
+        public ResourceLoader resourceLoader()  {
+            return Mockito.mock(ResourceLoader.class);
+        }
     }
 }
 

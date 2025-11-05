@@ -2,32 +2,30 @@ package ru.otus.hw.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.otus.hw.domain.Student;
 import ru.otus.hw.domain.TestResult;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@TestPropertySource(properties = "spring.shell.interactive.enabled=false")
+@SpringBootTest(classes = TestRunnerServiceImpl.class)
 class TestRunnerServiceTest {
     private final String TEST_FIRSTNAME = "<Student firstname>";
     private final String TEST_LASTNAME = "<Student lastname>";
 
-    @Mock
+    @MockitoBean
     private TestService testService;
 
-    @Mock
+    @MockitoBean
     private RegisterContext registerContext;
 
-    @Mock
+    @MockitoBean
     private ResultService resultService;
 
-    @InjectMocks
+    @Autowired
     private TestRunnerServiceImpl testRunnerService;
 
     @Test
