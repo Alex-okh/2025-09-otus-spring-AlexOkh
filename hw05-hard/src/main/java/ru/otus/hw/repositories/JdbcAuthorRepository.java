@@ -30,7 +30,8 @@ public class JdbcAuthorRepository implements AuthorRepository {
     public Optional<Author> findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         try {
-            return Optional.of(namedJdbc.queryForObject("select id, full_name from authors where id = :id", params,
+            return Optional.of(namedJdbc.queryForObject("select id, full_name from authors where id = :id",
+                                                        params,
                                                         new AuthorRowMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
