@@ -22,4 +22,7 @@ public class Comment {
 
     @Column(name = "text", nullable = false, unique = false)
     private String text;
+
+    @Column(name = "book_id", nullable = false)
+    private long bookId;
 }
