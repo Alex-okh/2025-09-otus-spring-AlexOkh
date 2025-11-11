@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="genres")
-public class Genre {
+@Table(name="comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false, unique = false)
-    private String name;
+    @Column(name = "text", nullable = false, unique = false)
+    private String text;
 }
