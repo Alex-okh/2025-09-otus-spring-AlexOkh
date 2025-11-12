@@ -15,6 +15,7 @@
         <module>hw02</module>
         <module>hw03</module>
         <module>hw05-hard</module>
+        <module>hw04-spring-shell</module>
 
     </modules>
 </project>
