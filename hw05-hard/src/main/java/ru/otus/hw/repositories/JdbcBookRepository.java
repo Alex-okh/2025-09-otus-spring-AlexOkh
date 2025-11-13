@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,13 +32,13 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
-        return Optional.ofNullable(namedJdbc.query(""" 
-                                                           select books.id, title, authors.id, full_name, genres.id, genres.name
-                                                           from books join authors on books.author_id = authors.id
-                                                                      join books_genres on books.id = book_id
-                                                                      join genres on genre_id = genres.id
-                                                           where books.id = :id""", params,
-                                                   new BookResultSetExtractor()));
+        return Optional.ofNullable(namedJdbc.query(
+        """
+                select books.id, title, authors.id, full_name, genres.id, genres.name
+                from books join authors on books.author_id = authors.id
+                    join books_genres on books.id = book_id
+                    join genres on genre_id = genres.id
+                where books.id = :id""", params,new BookResultSetExtractor()));
     }
 
     @Override
@@ -79,12 +80,16 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     private void mergeBooksInfo(List<Book> booksWithoutGenres, List<Genre> genres, List<BookGenreRelation> relations) {
-        for (var book : booksWithoutGenres) {
-            relations.stream()
-                     .filter(rel -> book.getId() == rel.bookId)
-                     .flatMap(rel -> genres.stream()
-                                           .filter(genre -> genre.getId() == rel.genreId))
-                     .forEach(book.getGenres()::add);
+        Map<Long, Book> booksMap = booksWithoutGenres.stream()
+                                                     .collect(Collectors.toMap(Book::getId, book -> book));
+        Map<Long, Genre> genresMap = genres.stream()
+                                           .collect(Collectors.toMap(Genre::getId, genre -> genre));
+        for (var rel : relations) {
+            var book = booksMap.get(rel.bookId);
+            var genre = genresMap.get(rel.genreId);
+            if (book != null && genre != null) {
+                book.getGenres().add(genre);
+            }
         }
     }
 
@@ -110,7 +115,7 @@ public class JdbcBookRepository implements BookRepository {
                                                     title = :title,
                                                     author_id = :author_id
                                                     where id = :book_id
-                                                          """, params);
+                                                  """, params);
         if (upatedRows == 0) {
             throw new EntityNotFoundException("Update failed. No book found with id " + book.getId());
         }
@@ -120,8 +125,11 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     private void batchInsertGenresRelationsFor(Book book) {
-        Map<String, Object>[] batchParams = new Map[book.getGenres()
-                                                        .size()];
+        List<Genre> genres = book.getGenres();
+        if (genres == null || genres.isEmpty()) {
+            return;
+        }
+        Map<String, Object>[] batchParams = new Map[genres.size()];
         for (int i = 0; i < batchParams.length; i++) {
             Map<String, Object> params = new HashMap<>();
             params.put("bookid", book.getId());
