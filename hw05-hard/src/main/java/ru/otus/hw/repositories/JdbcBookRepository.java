@@ -31,14 +31,13 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
-        var book = namedJdbc.query(""" 
-                                           select books.id, title, authors.id, full_name, genres.id, genres.name
-                                           from books join authors on books.author_id = authors.id
-                                                      join books_genres on books.id = book_id
-                                                      join genres on genre_id = genres.id
-                                           where books.id = :id""",
-                                   params, new BookResultSetExtractor());
-        return Optional.ofNullable(book);
+        return Optional.ofNullable(namedJdbc.query(""" 
+                                                           select books.id, title, authors.id, full_name, genres.id, genres.name
+                                                           from books join authors on books.author_id = authors.id
+                                                                      join books_genres on books.id = book_id
+                                                                      join genres on genre_id = genres.id
+                                                           where books.id = :id""", params,
+                                                   new BookResultSetExtractor()));
     }
 
     @Override
@@ -76,8 +75,7 @@ public class JdbcBookRepository implements BookRepository {
                                        select book_id, genre_id
                                            from books_genres
                                        """, Collections.emptyMap(),
-                               (rs, rn) -> new BookGenreRelation(rs.getLong("book_id"),
-                                                                 rs.getLong("genre_id")));
+                               (rs, rn) -> new BookGenreRelation(rs.getLong("book_id"), rs.getLong("genre_id")));
     }
 
     private void mergeBooksInfo(List<Book> booksWithoutGenres, List<Genre> genres, List<BookGenreRelation> relations) {
@@ -92,8 +90,8 @@ public class JdbcBookRepository implements BookRepository {
 
     private Book insert(Book book) {
         var keyHolder = new GeneratedKeyHolder();
-        var params = new MapSqlParameterSource(Map.of("title", book.getTitle(),
-                                                      "author_id", book.getAuthor().getId()));
+        var params = new MapSqlParameterSource(Map.of("title", book.getTitle(), "author_id", book.getAuthor()
+                                                                                                 .getId()));
         namedJdbc.update("""
                                  insert into books (title, author_id)
                                  values(:title, :author_id)
@@ -104,9 +102,9 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     private Book update(Book book) {
-        Map<String, Object> params = Map.of("book_id", book.getId(),
-                                            "title", book.getTitle(),
-                                            "author_id",book.getAuthor().getId());
+        Map<String, Object> params = Map.of("book_id", book.getId(), "title", book.getTitle(), "author_id",
+                                            book.getAuthor()
+                                                .getId());
         var upatedRows = namedJdbc.update(""" 
                                                   update books set
                                                     title = :title,
@@ -122,7 +120,8 @@ public class JdbcBookRepository implements BookRepository {
     }
 
     private void batchInsertGenresRelationsFor(Book book) {
-        Map<String, Object>[] batchParams = new Map[book.getGenres().size()];
+        Map<String, Object>[] batchParams = new Map[book.getGenres()
+                                                        .size()];
         for (int i = 0; i < batchParams.length; i++) {
             Map<String, Object> params = new HashMap<>();
             params.put("bookid", book.getId());
