@@ -20,7 +20,7 @@ public class JPACommentRepository implements CommentRepository {
 
     @Override
     public List<Comment> findByBookId(long id) {
-        return em.createQuery("select c from Comment c where c.bookId = :id", Comment.class)
+        return em.createQuery("select c from Comment c where c.book.id = :id", Comment.class)
                  .setParameter("id", id)
                  .getResultList();
     }
