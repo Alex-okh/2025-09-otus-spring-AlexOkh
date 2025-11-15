@@ -15,12 +15,12 @@ public class CommentsCommands {
 
     @ShellMethod(value = "Find comment by id", key = "ci")
     public String findCommentById(long id) {
-        return commentsService.FindById(id).map(converter::CommmentToString).orElse("Comment with ID %d not found".formatted(id));
+        return commentsService.FindById(id).map(converter::commmentToString).orElse("Comment with ID %d not found".formatted(id));
     }
 
     @ShellMethod(value = "Find all comments for book id", key = "cbi")
     public String findAllCommentsByBookId(long bookId) {
-        return commentsService.FindAllByBookId(bookId).stream().map(converter::CommmentToString).collect(
+        return commentsService.FindAllByBookId(bookId).stream().map(converter::commmentToString).collect(
                 Collectors.joining("," + System.lineSeparator()));
     }
 

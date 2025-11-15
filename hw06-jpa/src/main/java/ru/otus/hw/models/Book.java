@@ -9,7 +9,7 @@ import org.hibernate.annotations.FetchMode;
 import java.util.List;
 
 @Entity
-
+@NamedEntityGraph(name = "book-authors-genres", attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,11 +28,9 @@ public class Book {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @Fetch(FetchMode.SUBSELECT)
     private List<Genre> genres;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments;
 }

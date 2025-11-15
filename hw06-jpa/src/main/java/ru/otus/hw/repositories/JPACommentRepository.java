@@ -2,7 +2,6 @@ package ru.otus.hw.repositories;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import ru.otus.hw.models.Comment;
 import java.util.List;
@@ -21,8 +20,8 @@ public class JPACommentRepository implements CommentRepository {
 
     @Override
     public List<Comment> findByBookId(long id) {
-        TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.bookId = :id", Comment.class);
-        query.setParameter("id", id);
-        return query.getResultList();
+        return em.createQuery("select c from Comment c where c.bookId = :id", Comment.class)
+                 .setParameter("id", id)
+                 .getResultList();
     }
 }
