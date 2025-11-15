@@ -14,11 +14,11 @@ public class JPAAuthorRepository implements AuthorRepository {
 
     @Override
     public List<Author> findAll() {
-        return List.of();
+        return em.createQuery("from Author", Author.class).getResultList();
     }
 
     @Override
     public Optional<Author> findById(long id) {
-        return Optional.empty();
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 }

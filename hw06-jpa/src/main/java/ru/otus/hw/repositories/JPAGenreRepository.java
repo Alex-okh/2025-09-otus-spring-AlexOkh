@@ -8,17 +8,20 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class JPAGenreRepository implements GenreRepository{
+public class JPAGenreRepository implements GenreRepository {
     @PersistenceContext
     private EntityManager em;
 
     @Override
     public List<Genre> findAll() {
-        return List.of();
+        return em.createQuery("from Genre", Genre.class)
+                 .getResultList();
     }
 
     @Override
     public List<Genre> findAllByIds(Set<Long> ids) {
-        return List.of();
+        return em.createQuery("select g from Genre g where id in (:ids)")
+                 .setParameter("ids", ids)
+                 .getResultList();
     }
 }
