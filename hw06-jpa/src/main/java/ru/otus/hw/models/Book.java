@@ -33,4 +33,9 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments;
+
+    @Override
+    public String toString() {
+        return "Book{" + "id=" + id + ", title='" + title + '\'' + ", author=" + author + '}';
+    }
 }
