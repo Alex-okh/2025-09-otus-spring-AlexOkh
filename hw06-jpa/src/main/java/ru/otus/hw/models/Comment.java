@@ -26,6 +26,11 @@ public class Comment {
     @Column(name = "text", nullable = false, unique = false)
     private String text;
 
+    @Override
+    public String toString() {
+        return "Comment{" + "id=" + id + ", text='" + text + '\'' + ", bookID=" + book.getId() + '}';
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
