@@ -26,9 +26,6 @@ class JPAGenreRepositoryTest {
     @Autowired
     private JPAGenreRepository repo;
 
-    @Autowired
-    private TestEntityManager em;
-
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
                         .boxed()

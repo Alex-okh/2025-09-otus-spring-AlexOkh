@@ -2,6 +2,8 @@ package ru.otus.hw.repositories;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -19,9 +21,6 @@ public class JPACommentRepositoryTest {
     @Autowired
     private CommentRepository commentRepository;
 
-    @Autowired
-    private TestEntityManager em;
-
     @DisplayName("должен получать комментарий по ID")
     @Test
     void shouldLoadCommentById() {
@@ -38,5 +37,13 @@ public class JPACommentRepositoryTest {
     void shouldLoadCommentByBookId() {
         var actualComments = commentRepository.findByBookId(1L);
         assertThat(actualComments).hasSize(2);
+    }
+
+    @DisplayName("должен возвращать пустой лист по ID несуществующей книги")
+    @ParameterizedTest
+    @ValueSource(ints = {0, 100, -100})
+    void shouldLoadCommentByBadBookId(long id) {
+        var actualComments = commentRepository.findByBookId(id);
+        assertThat(actualComments).hasSize(0);
     }
 }
