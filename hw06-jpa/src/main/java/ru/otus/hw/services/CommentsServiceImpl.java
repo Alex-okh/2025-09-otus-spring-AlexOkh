@@ -14,12 +14,12 @@ public class CommentsServiceImpl implements CommentsService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<Comment> FindAllByBookId(long bookId) {
+    public List<Comment> findAllByBookId(long bookId) {
         return commentRepository.findByBookId(bookId);
     }
 
     @Override
-    public Optional<Comment> FindById(long id) {
+    public Optional<Comment> findById(long id) {
         return commentRepository.findById(id);
     }
 }

@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Genre;
 import java.util.List;
@@ -21,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(JPAGenreRepository.class)
 class JPAGenreRepositoryTest {
 
-    private Set<Long> INCORRECT_IDS = Set.of(-1L, 1000L, -1000L);
+    private final Set<Long> INCORRECT_IDS = Set.of(-1L, 1000L, -1000L);
 
     @Autowired
     private JPAGenreRepository repo;

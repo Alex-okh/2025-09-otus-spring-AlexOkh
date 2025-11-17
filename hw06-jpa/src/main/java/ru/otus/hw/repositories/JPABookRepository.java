@@ -4,7 +4,6 @@ import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import ru.otus.hw.models.Book;
 import java.util.List;
@@ -23,30 +22,18 @@ public class JPABookRepository implements BookRepository {
         TypedQuery<Book> query = em.createQuery("select b from Book b where b.id = :id", Book.class);
         query.setHint(FETCH.getKey(), entityGraph);
         var book = query.setParameter("id", id)
-                        .getSingleResult();
-        if (book != null) {
-            Hibernate.initialize(book.getComments());
-        }
-        return Optional.ofNullable(book);
+                        .getResultList();
+        return book.stream()
+                   .findFirst();
     }
 
     @Override
     public List<Book> findAll() {
-//        EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genres");
-        TypedQuery<Book> query = em.createQuery("""
-                                                       select distinct b from Book b
-                                                       left join fetch b.author
-                                                      left join fetch b.genres
-                                                      left join fetch b.comments
-                                                        """, Book.class);
-//        query.setHint(FETCH.getKey(), entityGraph);
-        List<Book> books = query.getResultList();
-
-//        for (Book book : books) {
-//            Hibernate.initialize(book.getComments());
-//        }
-        return books;
-    }
+        EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genres");
+        TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
+        query.setHint(FETCH.getKey(), entityGraph);
+        return query.getResultList();
+       }
 
     @Override
     public Book save(Book book) {

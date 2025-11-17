@@ -25,7 +25,7 @@ class CommentsServiceImplTest {
     @DisplayName("Загружать все комментарии по ID книги")
     @CsvSource({"1,2", "2,0", "3,1"})
     void findAllByBookId(long bookId, int expectedCount) {
-        var comments = commentsService.FindAllByBookId(bookId);
+        var comments = commentsService.findAllByBookId(bookId);
         assertThat(comments).hasSize(expectedCount);
         comments.forEach(comment -> {
             assertThatCode(() -> {
@@ -44,9 +44,17 @@ class CommentsServiceImplTest {
     @DisplayName("Загружать комментарий по ID")
     @CsvSource({"1, Comment1_1", "2, Comment1_2", "3, Comment1_3"})
     void findById(long id, String text) {
-        var comment = commentsService.FindById(id);
+        var comment = commentsService.findById(id);
         assertThat(comment).isNotEmpty()
                            .get()
                            .hasFieldOrPropertyWithValue("text", text);
+        assertThatCode(() -> {
+            assertThat(comment.get()
+                              .getBook()
+                              .getGenres()).isNotEmpty();
+            assertThat(comment.get()
+                              .getBook()
+                              .getAuthor()).isNotNull();
+        }).doesNotThrowAnyException();
     }
 }

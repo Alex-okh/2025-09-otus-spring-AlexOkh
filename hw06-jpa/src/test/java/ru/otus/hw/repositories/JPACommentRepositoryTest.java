@@ -6,14 +6,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("репозиторий для работы с комментариями должен:")
 @DataJpaTest
 @Import(JPACommentRepository.class)
-public class JPACommentRepositoryTest {
+class JPACommentRepositoryTest {
 
     private static final long GOOD_COMMENT_ID = 1L;
     private static final String GOOD_COMMENT_TEXT = "Comment1_1";
@@ -44,6 +43,6 @@ public class JPACommentRepositoryTest {
     @ValueSource(ints = {0, 100, -100})
     void shouldLoadCommentByBadBookId(long id) {
         var actualComments = commentRepository.findByBookId(id);
-        assertThat(actualComments).hasSize(0);
+        assertThat(actualComments).isEmpty();
     }
 }

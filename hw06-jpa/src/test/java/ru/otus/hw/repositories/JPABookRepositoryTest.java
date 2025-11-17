@@ -37,9 +37,8 @@ class JPABookRepositoryTest {
 
     @DisplayName("должен загружать книгу по id")
     @ParameterizedTest
-    @CsvSource({"1, BookTitle_1, Author_1, Genre_1, 2, Comment1_1, 2", "2, BookTitle_2, Author_2, Genre_3, 2, '', 0"})
-    void shouldReturnCorrectBookById(long id, String title, String author1, String genre1, int genreCount,
-                                     String comment1, int commentCount) {
+    @CsvSource({"1, BookTitle_1, Author_1, Genre_1, 2", "2, BookTitle_2, Author_2, Genre_3, 2"})
+    void shouldReturnCorrectBookById(long id, String title, String author1, String genre1, int genreCount) {
         var actualBook = bookRepository.findById(id);
         assertThat(actualBook).isPresent()
                               .get()
@@ -53,16 +52,6 @@ class JPABookRepositoryTest {
                                           .contains(genre1);
         assertThat(actualBook.get()
                              .getGenres()).hasSize(genreCount);
-        assertThat(actualBook.get()
-                             .getComments()).hasSize(commentCount);
-        if (!comment1.isEmpty()) {
-            assertThat(actualBook.get()
-                                 .getComments()).extracting("text")
-                                                .contains(comment1);
-        } else {
-            assertThat(actualBook.get()
-                                 .getComments()).isEmpty();
-        }
 
     }
 
@@ -71,13 +60,19 @@ class JPABookRepositoryTest {
     void shouldReturnCorrectBooksList() {
         var actualBooks = bookRepository.findAll();
         assertThat(actualBooks).hasSize(EXPECTED_BOOK_COUNT);
+        assertThat(actualBooks.getFirst()
+                              .getAuthor()
+                              .getFullName()).isNotNull();
+        assertThat(actualBooks.getLast()
+                              .getGenres()
+                              .getLast()
+                              .getName()).isNotNull();
     }
 
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBook = new Book(0, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")),
-                                    null);
+        var expectedBook = new Book(0, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
         var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
                                 .matches(book -> book.getId() > 0)
@@ -92,8 +87,7 @@ class JPABookRepositoryTest {
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
-        var expectedBook = new Book(1, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")),
-                                    null);
+        var expectedBook = new Book(1, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
 
         var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
