@@ -4,11 +4,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.repositories.JPACommentRepository;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("Сервис комментариев должен")
-@SpringBootTest
+@DataJpaTest
+@Import({CommentsServiceImpl.class, JPACommentRepository.class})
+@Transactional(propagation = Propagation.NEVER)
 class CommentsServiceImplTest {
 
     @Autowired
@@ -20,6 +27,17 @@ class CommentsServiceImplTest {
     void findAllByBookId(long bookId, int expectedCount) {
         var comments = commentsService.FindAllByBookId(bookId);
         assertThat(comments).hasSize(expectedCount);
+        comments.forEach(comment -> {
+            assertThatCode(() -> {
+                assertThat(comment.getBook()
+                                  .getId()).isEqualTo(bookId);
+                assertThat(comment.getBook()
+                                  .getGenres()).isNotEmpty();
+                assertThat(comment.getBook()
+                                  .getAuthor()).isNotNull();
+            }).doesNotThrowAnyException();
+
+        });
     }
 
     @ParameterizedTest

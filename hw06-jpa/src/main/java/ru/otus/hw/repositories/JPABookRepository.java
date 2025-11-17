@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
-
 @Repository
 public class JPABookRepository implements BookRepository {
 
@@ -33,14 +32,19 @@ public class JPABookRepository implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genres");
-        TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
-        query.setHint(FETCH.getKey(), entityGraph);
+//        EntityGraph<?> entityGraph = em.getEntityGraph("book-authors-genres");
+        TypedQuery<Book> query = em.createQuery("""
+                                                       select distinct b from Book b
+                                                       left join fetch b.author
+                                                      left join fetch b.genres
+                                                      left join fetch b.comments
+                                                        """, Book.class);
+//        query.setHint(FETCH.getKey(), entityGraph);
         List<Book> books = query.getResultList();
 
-        for (Book book : books) {
-            Hibernate.initialize(book.getComments());
-        }
+//        for (Book book : books) {
+//            Hibernate.initialize(book.getComments());
+//        }
         return books;
     }
 
