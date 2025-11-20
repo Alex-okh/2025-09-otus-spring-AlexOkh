@@ -14,15 +14,18 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 
 @Entity
-@NamedEntityGraph(name = "book-authors-genres", attributeNodes = {
-        @NamedAttributeNode("author"),
-        @NamedAttributeNode("genres")})
-@Data
+@NamedEntityGraph(name = "book-authors-genres",
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
+@NamedEntityGraph(name = "book-authors", attributeNodes = @NamedAttributeNode("author"))
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "books")
@@ -39,6 +42,7 @@ public class Book {
     private Author author;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
@@ -46,9 +50,6 @@ public class Book {
 
     @Override
     public String toString() {
-        String authorString = author == null ? "null" : author.toString();
-        String genresString = genres == null ? "null" : genres.toString();
-        return "Book{" + "id=" + id + ", " + "title='" + title + '\'' + ", author=" + authorString + ", genres=" +
-               genresString + '}';
+        return "Book{" + "id=" + id + "}";
     }
 }

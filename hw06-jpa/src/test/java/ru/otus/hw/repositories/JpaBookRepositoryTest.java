@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("репозиторий для работы с книгами должен:")
 @DataJpaTest
-@Import(JPABookRepository.class)
-class JPABookRepositoryTest {
+@Import(JpaBookRepository.class)
+class JpaBookRepositoryTest {
 
     private static final int EXPECTED_BOOK_COUNT = 3;
 

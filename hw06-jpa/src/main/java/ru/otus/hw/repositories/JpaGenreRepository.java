@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class JPAGenreRepository implements GenreRepository {
+public class JpaGenreRepository implements GenreRepository {
     @PersistenceContext
     private EntityManager em;
 

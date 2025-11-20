@@ -8,13 +8,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.hw.repositories.JPACommentRepository;
+import ru.otus.hw.repositories.JpaCommentRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("Сервис комментариев должен")
 @DataJpaTest
-@Import({CommentsServiceImpl.class, JPACommentRepository.class})
+@Import({CommentsServiceImpl.class, JpaCommentRepository.class})
 @Transactional(propagation = Propagation.NEVER)
 class CommentsServiceImplTest {
 
@@ -36,7 +36,6 @@ class CommentsServiceImplTest {
                 assertThat(comment.getBook()
                                   .getAuthor()).isNotNull();
             }).doesNotThrowAnyException();
-
         });
     }
 

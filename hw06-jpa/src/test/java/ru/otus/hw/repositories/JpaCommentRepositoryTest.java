@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("репозиторий для работы с комментариями должен:")
 @DataJpaTest
-@Import(JPACommentRepository.class)
-class JPACommentRepositoryTest {
+@Import(JpaCommentRepository.class)
+class JpaCommentRepositoryTest {
 
     private static final long GOOD_COMMENT_ID = 1L;
     private static final String GOOD_COMMENT_TEXT = "Comment1_1";

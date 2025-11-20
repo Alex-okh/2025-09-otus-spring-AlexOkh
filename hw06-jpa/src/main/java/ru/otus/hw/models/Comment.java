@@ -8,23 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@NamedEntityGraph(name = "comment-book", attributeNodes = {
-        @NamedAttributeNode(value = "book", subgraph = "book-authors-genres")},
-        subgraphs = {
-        @NamedSubgraph(name = "book-authors-genres",
-                attributeNodes = {
-                    @NamedAttributeNode("author"),
-                    @NamedAttributeNode("genres")})})
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "comments")
@@ -43,7 +35,6 @@ public class Comment {
 
     @Override
     public String toString() {
-        String bookString = book == null ? "null" : book.toString();
-        return "Comment{" + "id=" + id + ", text='" + text + '\'' + ", bookID=" + bookString + '}';
+        return "Comment{" + "id=" + id + '}';
     }
 }

@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("репозиторий для работы с авторами должен:")
 @DataJpaTest
-@Import(JPAAuthorRepository.class)
-public class JPAAuthorRepositoryTest {
+@Import(JpaAuthorRepository.class)
+class JpaAuthorRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;
 
@@ -30,10 +30,11 @@ public class JPAAuthorRepositoryTest {
     @ValueSource(longs = {1, 2, 3})
     void findByIdTest(long id) {
         var author = authorRepository.findById(id);
-        assertThat(author).isNotEmpty()
+        var expectedAuthor = new Author(id, "Author_" + id);
+        assertThat(author).isPresent()
                           .get()
-                          .hasFieldOrPropertyWithValue("id", id)
-                          .hasFieldOrPropertyWithValue("fullName", "Author_" + id);
+                          .usingRecursiveComparison()
+                          .isEqualTo(expectedAuthor);
     }
 
     @DisplayName("загружать пустого автора по несуществующему ID")

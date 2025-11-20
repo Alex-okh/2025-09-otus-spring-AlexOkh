@@ -17,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе JPA для работы с жанрами ")
 @DataJpaTest
-@Import(JPAGenreRepository.class)
-class JPAGenreRepositoryTest {
+@Import(JpaGenreRepository.class)
+class JpaGenreRepositoryTest {
 
     private final Set<Long> INCORRECT_IDS = Set.of(-1L, 1000L, -1000L);
 
     @Autowired
-    private JPAGenreRepository repo;
+    private JpaGenreRepository repo;
 
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
@@ -45,7 +45,9 @@ class JPAGenreRepositoryTest {
         var actualGenres = repo.findAll();
         var expectedGenres = getDbGenres();
 
-        assertThat(actualGenres).containsExactlyElementsOf(expectedGenres);
+        assertThat(actualGenres).hasSameSizeAs(expectedGenres)
+                                .usingRecursiveComparison()
+                                .isEqualTo(expectedGenres);
     }
 
     @DisplayName("должен загружать жанр по одному id")
@@ -54,7 +56,9 @@ class JPAGenreRepositoryTest {
     void shouldReturnCorrectGenreById(Genre expectedGenre) {
         var actualGenres = repo.findAllByIds(Set.of(expectedGenre.getId()));
 
-        assertThat(actualGenres).containsExactlyElementsOf(Set.of(expectedGenre));
+        assertThat(actualGenres).hasSize(1);
+        assertThat(actualGenres.getFirst()).usingRecursiveComparison()
+                                           .isEqualTo(expectedGenre);
     }
 
     @DisplayName("должен загружать жанры по нескольким id")
@@ -66,7 +70,9 @@ class JPAGenreRepositoryTest {
                                              .collect(Collectors.toSet());
         var actualGenres = repo.findAllByIds(expectedGenreIds);
 
-        assertThat(actualGenres).containsExactlyInAnyOrderElementsOf(expectedGenres);
+        assertThat(actualGenres).hasSameSizeAs(expectedGenres)
+                                .usingRecursiveComparison()
+                                .isEqualTo(expectedGenres);
     }
 
     @DisplayName("должен возвращать пустой лист по несуществующему ID")
@@ -88,6 +94,8 @@ class JPAGenreRepositoryTest {
         genreIds.addAll(INCORRECT_IDS);
         var actualGenres = repo.findAllByIds(genreIds);
 
-        assertThat(actualGenres).containsExactlyInAnyOrderElementsOf(expectedGenres);
+        assertThat(actualGenres).hasSameSizeAs(expectedGenres)
+                                .usingRecursiveComparison()
+                                .isEqualTo(expectedGenres);
     }
 }
