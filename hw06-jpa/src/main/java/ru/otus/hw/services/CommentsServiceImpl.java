@@ -17,21 +17,12 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @Transactional
     public List<Comment> findAllByBookId(long bookId) {
-        var comments = commentRepository.findByBookId(bookId);
-        comments.forEach(comment ->
-            comment.getBook()
-                   .getGenres()
-                   .size());
-        return comments;
+        return commentRepository.findByBookId(bookId);
     }
 
     @Override
     @Transactional
     public Optional<Comment> findById(long id) {
-        var comment = commentRepository.findById(id);
-        comment.ifPresent(c -> c.getBook()
-                                .getGenres()
-                                .size());
-        return comment;
+        return commentRepository.findById(id);
     }
 }
