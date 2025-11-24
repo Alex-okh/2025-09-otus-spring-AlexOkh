@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  test-db:
+    image: postgres:15
+    container_name: hw06
+    environment:
+      - POSTGRES_USER=usr
+      - POSTGRES_PASSWORD=pwd
+      - POSTGRES_DB=hw06
+    ports:
+      - "5430:5432"
