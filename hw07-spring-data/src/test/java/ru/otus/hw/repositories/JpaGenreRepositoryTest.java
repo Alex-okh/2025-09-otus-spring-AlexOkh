@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Genre;
 import java.util.List;
 import java.util.Set;
@@ -17,13 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе JPA для работы с жанрами ")
 @DataJpaTest
-@Import(JpaGenreRepository.class)
 class JpaGenreRepositoryTest {
 
     private final Set<Long> INCORRECT_IDS = Set.of(-1L, 1000L, -1000L);
 
     @Autowired
-    private JpaGenreRepository repo;
+    private GenreRepository repo;
 
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
@@ -54,7 +52,7 @@ class JpaGenreRepositoryTest {
     @ParameterizedTest
     @MethodSource("getDbGenres")
     void shouldReturnCorrectGenreById(Genre expectedGenre) {
-        var actualGenres = repo.findAllByIds(Set.of(expectedGenre.getId()));
+        var actualGenres = repo.findAllByIdIn(Set.of(expectedGenre.getId()));
 
         assertThat(actualGenres).hasSize(1);
         assertThat(actualGenres.getFirst()).usingRecursiveComparison()
@@ -68,7 +66,7 @@ class JpaGenreRepositoryTest {
         var expectedGenreIds = expectedGenres.stream()
                                              .map(Genre::getId)
                                              .collect(Collectors.toSet());
-        var actualGenres = repo.findAllByIds(expectedGenreIds);
+        var actualGenres = repo.findAllByIdIn(expectedGenreIds);
 
         assertThat(actualGenres).hasSameSizeAs(expectedGenres)
                                 .usingRecursiveComparison()
@@ -79,7 +77,7 @@ class JpaGenreRepositoryTest {
     @ParameterizedTest
     @ValueSource(longs = {-1, 1000, -1000})
     void shouldReturnEmptyGenreListByIncorrectId(long incorrectId) {
-        var actualGenre = repo.findAllByIds(Set.of(incorrectId));
+        var actualGenre = repo.findAllByIdIn(Set.of(incorrectId));
 
         assertThat(actualGenre).isEmpty();
     }
@@ -92,7 +90,7 @@ class JpaGenreRepositoryTest {
                                      .map(Genre::getId)
                                      .collect(Collectors.toSet());
         genreIds.addAll(INCORRECT_IDS);
-        var actualGenres = repo.findAllByIds(genreIds);
+        var actualGenres = repo.findAllByIdIn(genreIds);
 
         assertThat(actualGenres).hasSameSizeAs(expectedGenres)
                                 .usingRecursiveComparison()

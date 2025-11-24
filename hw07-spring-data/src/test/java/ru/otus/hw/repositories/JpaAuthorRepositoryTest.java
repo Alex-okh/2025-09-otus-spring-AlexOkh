@@ -6,14 +6,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Author;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("репозиторий для работы с авторами должен:")
 @DataJpaTest
-@Import(JpaAuthorRepository.class)
 class JpaAuthorRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;

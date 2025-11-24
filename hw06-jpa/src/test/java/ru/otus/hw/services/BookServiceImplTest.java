@@ -72,7 +72,7 @@ class BookServiceImplTest {
     @BeforeEach
     void Setup() {
         testBooks = getDbBooks(getDbAuthors(), getDbGenres());
-         }
+    }
 
     @DisplayName("Загружать книгу по ID")
     @ParameterizedTest

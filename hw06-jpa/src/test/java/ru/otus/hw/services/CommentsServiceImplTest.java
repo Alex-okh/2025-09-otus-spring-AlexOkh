@@ -74,7 +74,7 @@ class CommentsServiceImplTest {
 
     @BeforeEach
     void Setup() {
-       testComments = getDbComments();
+        testComments = getDbComments();
     }
 
     @ParameterizedTest

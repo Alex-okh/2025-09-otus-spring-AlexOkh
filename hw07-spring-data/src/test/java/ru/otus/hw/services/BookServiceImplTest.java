@@ -14,10 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
-import ru.otus.hw.repositories.JpaAuthorRepository;
-import ru.otus.hw.repositories.JpaBookRepository;
-import ru.otus.hw.repositories.JpaCommentRepository;
-import ru.otus.hw.repositories.JpaGenreRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -25,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис книг должен")
 @DataJpaTest
-@Import({CommentsServiceImpl.class, BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class, JpaGenreRepository.class, JpaAuthorRepository.class, JpaBookRepository.class, JpaCommentRepository.class})
+@Import({CommentsServiceImpl.class, BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 class BookServiceImplTest {
     public static final String UPDATED_BOOK_TITLE = "BookTitle_10500";
@@ -72,7 +68,7 @@ class BookServiceImplTest {
     @BeforeEach
     void Setup() {
         testBooks = getDbBooks(getDbAuthors(), getDbGenres());
-         }
+    }
 
     @DisplayName("Загружать книгу по ID")
     @ParameterizedTest
@@ -101,9 +97,9 @@ class BookServiceImplTest {
     @DirtiesContext
     @DisplayName("Вставлять новую книгу")
     @Test
-    void insert() {
+    void create() {
         var expectedBook = new Book(0, UPDATED_BOOK_TITLE, new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
-        var returnedBook = bookService.insert(UPDATED_BOOK_TITLE, 3L, UPDATED_GENRES_IDS);
+        var returnedBook = bookService.create(UPDATED_BOOK_TITLE, 3L, UPDATED_GENRES_IDS);
         var foundBook = bookService.findById(returnedBook.getId());
         assertThat(foundBook).isNotEmpty();
         var actualBook = foundBook.get();
@@ -145,7 +141,7 @@ class BookServiceImplTest {
     }
 
     @DirtiesContext
-    @DisplayName("Удалять комментарии к книге при ее удалении по id")
+    @DisplayName("Удалять книгу и комментарии к книге при удалении книги по id")
     @Test
     void deleteByIdCommentsTest() {
         assertThat(bookService.findById(1L)).isNotEmpty();

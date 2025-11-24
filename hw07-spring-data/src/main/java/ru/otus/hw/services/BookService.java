@@ -10,7 +10,7 @@ public interface BookService {
 
     List<Book> findAll();
 
-    Book insert(String title, long authorId, Set<Long> genresIds);
+    Book create(String title, long authorId, Set<Long> genresIds);
 
     Book update(long id, String title, long authorId, Set<Long> genresIds);
 
