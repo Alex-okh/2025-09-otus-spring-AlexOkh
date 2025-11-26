@@ -72,7 +72,7 @@ public class BookServiceImpl implements BookService {
         if (isEmpty(genresIds)) {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
-        var genres = genreRepository.findAllByIdIn(genresIds);
+        var genres = genreRepository.findAllById(genresIds);
         if (isEmpty(genres) || genresIds.size() != genres.size()) {
             throw new EntityNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
         }
