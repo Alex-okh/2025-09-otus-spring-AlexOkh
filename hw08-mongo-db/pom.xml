@@ -9,7 +9,8 @@
         <version>3.5.3</version>
         <relativePath/>
     </parent>
-     <artifactId>hw07-spring-data</artifactId>
+    <groupId></groupId>
+    <artifactId>hw08-mongo-db</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
