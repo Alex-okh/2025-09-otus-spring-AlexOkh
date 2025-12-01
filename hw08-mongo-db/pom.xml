@@ -9,7 +9,6 @@
         <version>3.5.3</version>
         <relativePath/>
     </parent>
-    <groupId></groupId>
     <artifactId>hw08-mongo-db</artifactId>
 
     <properties>
