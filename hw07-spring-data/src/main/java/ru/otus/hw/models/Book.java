@@ -22,11 +22,8 @@ import java.util.List;
 
 @Entity
 @NamedEntityGraph(name = "book-authors-genres",
-        attributeNodes = {
-                @NamedAttributeNode("author"),
-                @NamedAttributeNode("genres")})
-@NamedEntityGraph(name = "book-authors",
-        attributeNodes = @NamedAttributeNode("author"))
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
+@NamedEntityGraph(name = "book-authors", attributeNodes = @NamedAttributeNode("author"))
 @Getter
 @Setter
 @AllArgsConstructor
