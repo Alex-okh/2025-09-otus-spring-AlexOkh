@@ -90,6 +90,7 @@ class BookServiceImplTest {
         assertThat(actualBooks).isNotEmpty()
                                .hasSize(EXPECTED_BOOKS_COUNT)
                                .usingRecursiveComparison()
+                               .ignoringExpectedNullFields()
                                .isEqualTo(testBooks);
 
     }

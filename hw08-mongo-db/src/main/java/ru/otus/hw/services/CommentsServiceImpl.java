@@ -17,7 +17,6 @@ public class CommentsServiceImpl implements CommentsService {
     @Transactional
     public List<Comment> findAllByBookId(String bookId) {
         return commentRepository.findByBookId(bookId);
-
     }
 
 }
