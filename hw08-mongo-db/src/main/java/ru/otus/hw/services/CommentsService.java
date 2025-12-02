@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface CommentsService {
 
-    List<Comment> findAllByBookId(long bookId);
+    List<Comment> findAllByBookId(String bookId);
 
-    Optional<Comment> findById(long id);
+
 }

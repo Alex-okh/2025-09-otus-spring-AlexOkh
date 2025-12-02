@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,7 +19,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис комментариев должен")
-@DataJpaTest
+@DataMongoTest
 @Import({CommentsServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 class CommentsServiceImplTest {
@@ -31,21 +32,21 @@ class CommentsServiceImplTest {
     private static List<Author> getDbAuthors() {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Author(id, "Author_" + id))
+                        .map(id -> new Author(String.valueOf(id), "Author_" + id))
                         .toList();
     }
 
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
                         .boxed()
-                        .map(id -> new Genre(id, "Genre_" + id))
+                        .map(id -> new Genre(String.valueOf(id), "Genre_" + id))
                         .toList();
     }
 
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Book(id, "BookTitle_" + id, dbAuthors.get(id - 1),
+                        .map(id -> new Book(String.valueOf(id), "BookTitle_" + id, dbAuthors.get(id - 1),
                                             dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)))
                         .toList();
     }
@@ -58,9 +59,9 @@ class CommentsServiceImplTest {
 
     private static List<Comment> getDbComments() {
         var books = getDbBooks();
-        var commentsNoBooks = IntStream.range(1, 4)
+        var commentsNoBooks = IntStream.range(1, 8)
                                        .boxed()
-                                       .map(id -> new Comment(id, "Comment1_" + id, null))
+                                       .map(id -> new Comment("Comment1_" + id, null))
                                        .toList();
         commentsNoBooks.get(0)
                        .setBook(books.get(0));

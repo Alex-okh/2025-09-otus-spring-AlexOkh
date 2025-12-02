@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,14 +14,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Comment;
 import ru.otus.hw.models.Genre;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис книг должен")
-@DataJpaTest
+@DataMongoTest
 @Import({CommentsServiceImpl.class, BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class})
 @Transactional(propagation = Propagation.NEVER)
 class BookServiceImplTest {
@@ -55,7 +58,7 @@ class BookServiceImplTest {
         return IntStream.range(1, 4)
                         .boxed()
                         .map(id -> new Book(id, "BookTitle_" + id, dbAuthors.get(id - 1),
-                                            dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)))
+                                            dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2), new ArrayList<Comment>()))
                         .toList();
     }
 

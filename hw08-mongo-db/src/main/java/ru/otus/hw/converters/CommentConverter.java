@@ -6,6 +6,6 @@ import ru.otus.hw.models.Comment;
 @Component
 public class CommentConverter {
     public String commmentToString(Comment comment) {
-        return "Id: %d, Name: %s".formatted(comment.getId(), comment.getText());
+        return "Text: %s".formatted(comment.getText());
     }
 }

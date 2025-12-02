@@ -24,8 +24,4 @@ public class Book {
 
     @DBRef
     private List<Genre> genres;
-
-    @Field(name = "book_comments")
-    private List<Comment> comments;
-
 }
