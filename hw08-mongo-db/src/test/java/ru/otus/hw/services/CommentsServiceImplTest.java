@@ -50,7 +50,7 @@ class CommentsServiceImplTest {
             var bookId = expectedBook.getId();
             var expectedComments = testComments.stream()
                                                .filter(c -> c.getBook()
-                                                             .getId() == bookId)
+                                                             .getId().equals(bookId))
                                                .toList();
             var expectedCount = expectedComments.size();
             var comments = commentsService.findAllByBookId(bookId);
