@@ -5,7 +5,7 @@ import ru.otus.hw.models.Book;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository extends MongoRepository<Book, String> {
+public interface BookRepository extends MongoRepository<Book, String>, BookRepositoryCustom<Book, String> {
     Optional<Book> findById(String id);
 
     List<Book> findAll();
