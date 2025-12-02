@@ -20,10 +20,14 @@ public class CommentsCommands {
 
     @ShellMethod(value = "Find all comments for book id", key = "cbi")
     public String findAllCommentsByBookId(String bookId) {
-        return "Comments to book: " + bookService.findById(bookId).get().getTitle() + "\n" +commentsService.findAllByBookId(bookId)
-                              .stream()
-                              .map(converter::commmentToString)
-                              .collect(Collectors.joining("," + System.lineSeparator()));
+        var book = bookService.findById(bookId);
+        if (book.isEmpty()) { return "Book with id %s not found".formatted(bookId); }
+        String bookTitle = book.get().getTitle();
+        String comments = commentsService.findAllByBookId(bookId)
+                                         .stream()
+                                         .map(converter::commmentToString)
+                                         .collect(Collectors.joining("," + System.lineSeparator()));
+        return "Comments to book: " + bookTitle + "\n" + comments;
     }
 
 }

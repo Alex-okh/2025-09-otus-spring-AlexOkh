@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @ChangeLog
-public class DatabaseChangelog {
+public class TestDatabaseChangelog {
 
     @ChangeSet(order = "001", id = "dropDB", author = "alex", runAlways = true)
     public void dropDB(MongoDatabase db) {
@@ -27,7 +27,8 @@ public class DatabaseChangelog {
     @ChangeSet(order = "002", id = "insertAuthors", author = "alex", runAlways = true)
     public void insertAuthors(MongoDatabase db) {
         var authors = getDbAuthors().stream()
-                                    .map(a -> new Document().append("fullName", a.getFullName()))
+                                    .map(a -> new Document().append("fullName", a.getFullName())
+                                                            .append("_id", a.getId()))
                                     .toList();
         db.createCollection("authors");
         MongoCollection<Document> collection = db.getCollection("authors");
@@ -37,7 +38,8 @@ public class DatabaseChangelog {
     @ChangeSet(order = "003", id = "insertGenres", author = "alex", runAlways = true)
     public void insertGenres(MongoDatabase db) {
         var genres = getDbGenres().stream()
-                                  .map(g -> new Document().append("name", g.getName()))
+                                  .map(g -> new Document().append("name", g.getName())
+                                                          .append("_id", g.getId()))
                                   .toList();
         db.createCollection("genres");
         MongoCollection<Document> collection = db.getCollection("genres");
@@ -64,14 +66,14 @@ public class DatabaseChangelog {
     private List<Author> getDbAuthors() {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Author(null, "Author_" + id))
+                        .map(id -> new Author("a_id_" + id, "Author_" + id))
                         .toList();
     }
 
     private List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
                         .boxed()
-                        .map(id -> new Genre(null, "Genre_" + id))
+                        .map(id -> new Genre("g_id_" + id, "Genre_" + id))
                         .toList();
     }
 
@@ -85,7 +87,7 @@ public class DatabaseChangelog {
     private List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Book(null, "BookTitle_" + id, dbAuthors.get(id - 1),
+                        .map(id -> new Book("b_id_" + id, "BookTitle_" + id, dbAuthors.get(id - 1),
                                             dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)))
                         .toList();
     }

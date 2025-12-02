@@ -25,6 +25,7 @@
         <reflections.version>0.10.2</reflections.version>
         <flyway.version>10.15.0</flyway.version>
         <flapdoodle.version>4.6.1</flapdoodle.version>
+        <mongock.version>4.3.8</mongock.version>
     </properties>
 
     <dependencies>
@@ -35,7 +36,7 @@
             <version>${spring.shell.version}</version>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -47,17 +48,24 @@
         <dependency>
             <groupId>com.github.cloudyrock.mongock</groupId>
             <artifactId>mongock-spring-v5</artifactId>
-            <version>4.3.8</version>
+            <version>${mongock.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.cloudyrock.mongock</groupId>
             <artifactId>mongodb-springdata-v3-driver</artifactId>
-            <version>4.3.8</version>
+            <version>${mongock.version}</version>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <version>${flapdoodle.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
+            <version>${flapdoodle.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -65,7 +73,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 
 
     </dependencies>

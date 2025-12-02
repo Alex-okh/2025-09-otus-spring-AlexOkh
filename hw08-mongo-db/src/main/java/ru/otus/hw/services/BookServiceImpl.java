@@ -6,12 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.models.Comment;
 import ru.otus.hw.models.Genre;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.GenreRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,7 +44,6 @@ public class BookServiceImpl implements BookService {
     public Book create(String title, String authorId, Set<String> genresIds) {
         var author = getAuthor(authorId);
         var genres = getGenres(genresIds);
-        var comments = new ArrayList<Comment>();
         var book = new Book(null, title, author, genres);
         return bookRepository.save(book);
     }
@@ -85,7 +82,7 @@ public class BookServiceImpl implements BookService {
     private Author getAuthor(String authorId) {
         return authorRepository.findById(authorId)
                                .orElseThrow(() -> new EntityNotFoundException(
-                                             "Author with id %s not found".formatted(authorId)));
+                                       "Author with id %s not found".formatted(authorId)));
 
     }
 }

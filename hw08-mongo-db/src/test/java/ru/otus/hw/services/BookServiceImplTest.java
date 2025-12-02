@@ -7,16 +7,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.events.CascadeDeleteMongoEventListener;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.models.Comment;
 import ru.otus.hw.models.Genre;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -24,12 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Сервис книг должен")
 @DataMongoTest
-@Import({CommentsServiceImpl.class, BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class})
+@Import({CommentsServiceImpl.class, BookServiceImpl.class, AuthorServiceImpl.class, GenreServiceImpl.class, CascadeDeleteMongoEventListener.class})
 @Transactional(propagation = Propagation.NEVER)
 class BookServiceImplTest {
     public static final String UPDATED_BOOK_TITLE = "BookTitle_10500";
-    public static final long UPDATED_AUTHOR_ID = 2L;
-    public static final Set<Long> UPDATED_GENRES_IDS = Set.of(1L);
+    public static final String UPDATED_AUTHOR_ID = "a_id_2";
+    public static final Set<String> UPDATED_GENRES_IDS = Set.of("g_id_1");
     static final int EXPECTED_BOOKS_COUNT = 3;
 
     @Autowired
@@ -43,22 +41,22 @@ class BookServiceImplTest {
     private static List<Author> getDbAuthors() {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Author(id, "Author_" + id))
+                        .map(id -> new Author("a_id_" + id, "Author_" + id))
                         .toList();
     }
 
     private static List<Genre> getDbGenres() {
         return IntStream.range(1, 7)
                         .boxed()
-                        .map(id -> new Genre(id, "Genre_" + id))
+                        .map(id -> new Genre("g_id_" + id, "Genre_" + id))
                         .toList();
     }
 
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
         return IntStream.range(1, 4)
                         .boxed()
-                        .map(id -> new Book(id, "BookTitle_" + id, dbAuthors.get(id - 1),
-                                            dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2), new ArrayList<Comment>()))
+                        .map(id -> new Book("b_id_" + id, "BookTitle_" + id, dbAuthors.get(id - 1),
+                                            dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)))
                         .toList();
     }
 
@@ -92,7 +90,6 @@ class BookServiceImplTest {
         assertThat(actualBooks).isNotEmpty()
                                .hasSize(EXPECTED_BOOKS_COUNT)
                                .usingRecursiveComparison()
-                               .ignoringExpectedNullFields()
                                .isEqualTo(testBooks);
 
     }
@@ -101,22 +98,21 @@ class BookServiceImplTest {
     @DisplayName("Вставлять новую книгу")
     @Test
     void create() {
-        var expectedBook = new Book(0, UPDATED_BOOK_TITLE, new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
-        var returnedBook = bookService.create(UPDATED_BOOK_TITLE, 3L, UPDATED_GENRES_IDS);
+        var expectedBook = new Book(null, UPDATED_BOOK_TITLE, new Author("a_id_3", "Author_3"),
+                                    List.of(new Genre("g_id_1", "Genre_1")));
+        var returnedBook = bookService.create(UPDATED_BOOK_TITLE, "a_id_3", UPDATED_GENRES_IDS);
         var foundBook = bookService.findById(returnedBook.getId());
         assertThat(foundBook).isNotEmpty();
         var actualBook = foundBook.get();
         assertThat(returnedBook).isNotNull()
-                                .matches(book -> book.getId() > 0)
+                                .matches(book -> book.getId() != null)
                                 .usingRecursiveComparison()
-                                .ignoringFields("id")
                                 .ignoringExpectedNullFields()
                                 .isEqualTo(expectedBook);
 
         assertThat(actualBook).isNotNull()
-                              .matches(book -> book.getId() > 0)
+                              .matches(book -> book.getId() != null)
                               .usingRecursiveComparison()
-                              .ignoringFields("id")
                               .ignoringExpectedNullFields()
                               .isEqualTo(expectedBook);
     }
@@ -125,19 +121,19 @@ class BookServiceImplTest {
     @DisplayName("Обновлять книгу без изменения ID")
     @Test
     void update() {
-        var expectedBook = new Book(3L, UPDATED_BOOK_TITLE, new Author(UPDATED_AUTHOR_ID, "Author_2"),
-                                    List.of(new Genre(1, "Genre_1")));
-        var returnedBook = bookService.update(3L, UPDATED_BOOK_TITLE, UPDATED_AUTHOR_ID, UPDATED_GENRES_IDS);
+        var expectedBook = new Book("b_id_3", UPDATED_BOOK_TITLE, new Author(UPDATED_AUTHOR_ID, "Author_2"),
+                                    List.of(new Genre("g_id_1", "Genre_1")));
+        var returnedBook = bookService.update("b_id_3", UPDATED_BOOK_TITLE, UPDATED_AUTHOR_ID, UPDATED_GENRES_IDS);
         var actualBook = bookService.findById(returnedBook.getId())
                                     .orElseGet(null);
         assertThat(returnedBook).isNotNull()
-                                .matches(book -> book.getId() > 0)
+                                .matches(book -> book.getId() != null)
                                 .usingRecursiveComparison()
                                 .ignoringExpectedNullFields()
                                 .isEqualTo(expectedBook);
 
         assertThat(actualBook).isNotNull()
-                              .matches(book -> book.getId() > 0)
+                              .matches(book -> book.getId() != null)
                               .usingRecursiveComparison()
                               .ignoringExpectedNullFields()
                               .isEqualTo(expectedBook);
@@ -147,10 +143,10 @@ class BookServiceImplTest {
     @DisplayName("Удалять книгу и комментарии к книге при удалении книги по id")
     @Test
     void deleteByIdCommentsTest() {
-        assertThat(bookService.findById(1L)).isNotEmpty();
-        assertThat(commentsService.findAllByBookId(1L)).isNotEmpty();
-        bookService.deleteById(1L);
-        assertThat(bookService.findById(1L)).isEmpty();
-        assertThat(commentsService.findAllByBookId(1L)).isEmpty();
+        assertThat(bookService.findById("b_id_1")).isNotEmpty();
+        assertThat(commentsService.findAllByBookId("b_id_1")).isNotEmpty();
+        bookService.deleteById("b_id_1");
+        assertThat(bookService.findById("b_id_1")).isEmpty();
+        assertThat(commentsService.findAllByBookId("b_id_1")).isEmpty();
     }
 }
