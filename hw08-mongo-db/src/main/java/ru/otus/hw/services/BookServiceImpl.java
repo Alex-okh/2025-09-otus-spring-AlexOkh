@@ -27,13 +27,13 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Book> findById(String id) {
-        return bookRepository.findByIdWithDetails(id);
+        return bookRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Book> findAll() {
-        return bookRepository.findAllWithDetails();
+        return bookRepository.findAll();
     }
 
     @Override

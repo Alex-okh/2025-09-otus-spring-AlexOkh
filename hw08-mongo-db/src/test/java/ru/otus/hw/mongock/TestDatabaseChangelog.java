@@ -80,7 +80,7 @@ public class TestDatabaseChangelog {
     private List<Comment> getDbComments(List<Book> books) {
         return IntStream.range(0, 8)
                         .boxed()
-                        .map(id -> new Comment("Comment_" + ((id % 3) + 1) + "_" + (id + 1), books.get(id % 3)))
+                        .map(id -> new Comment("c_id_" + id, "Comment_" + ((id % 3) + 1) + "_" + (id + 1), books.get(id % 3)))
                         .toList();
     }
 

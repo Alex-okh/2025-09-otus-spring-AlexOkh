@@ -3,9 +3,12 @@ package ru.otus.hw.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.models.Author;
@@ -32,9 +35,11 @@ class CommentsServiceImplTest {
     private static List<Comment> getDbComments(List<Book> books) {
         return IntStream.range(0, 8)
                         .boxed()
-                        .map(id -> new Comment("Comment_" + ((id % 3) + 1) + "_" + (id + 1), books.get(id % 3)))
+                        .map(id -> new Comment("c_id_" + id, "Comment_" + ((id % 3) + 1) + "_" + (id + 1),
+                                               books.get(id % 3)))
                         .toList();
     }
+
     private static List<Author> getDbAuthors() {
         return IntStream.range(1, 4)
                         .boxed()
@@ -88,4 +93,62 @@ class CommentsServiceImplTest {
                                 .isEqualTo(expectedComments);
         }
     }
+
+    @DirtiesContext
+    @Test
+    @DisplayName("Удалять комментарий по его id")
+    void deleteCommentById() {
+        for (var comment : testComments) {
+            assertThat(commentsService.findCommentById(comment.getId())).isPresent();
+            commentsService.deleteCommentById(comment.getId());
+            assertThat(commentsService.findCommentById(comment.getId())).isEmpty();
+        }
+    }
+
+    @DirtiesContext
+    @Test
+    @DisplayName("Обновлять комментарий по его id")
+    void updateCommentById() {
+        for (var comment : testComments) {
+            assertThat(commentsService.findCommentById(comment.getId())).isPresent()
+                                                                        .get()
+                                                                        .usingRecursiveComparison()
+                                                                        .ignoringExpectedNullFields()
+                                                                        .isEqualTo(comment);
+
+            var expectedText = comment.getText() + "_UPDATED";
+            comment.setText(expectedText);
+            var updatedComment = commentsService.updateCommentById(expectedText, comment.getId());
+            var actualComment = commentsService.findCommentById(comment.getId());
+            assertThat(actualComment).isPresent()
+                                     .get()
+                                     .usingRecursiveComparison()
+                                     .ignoringExpectedNullFields()
+                                     .isEqualTo(comment);
+            assertThat(updatedComment).usingRecursiveComparison()
+                                      .ignoringExpectedNullFields()
+                                      .isEqualTo(comment);
+        }
+    }
+
+    @DirtiesContext
+    @ParameterizedTest
+    @DisplayName("Создавать комментарий по id книги")
+    @MethodSource("getDbBooks")
+    void createCommentById(Book book) {
+        var expectedComments = commentsService.findAllByBookId(book.getId());
+        var newComment = new Comment(null, "NEW_COMMENT FOR BOOK" + book.getTitle(), book);
+        expectedComments.add(newComment);
+
+        commentsService.createCommentByBookId(newComment.getText(), book.getId());
+
+        var actualComments = commentsService.findAllByBookId(book.getId());
+
+        assertThat(actualComments).usingRecursiveComparison()
+                                  .ignoringFields("id")
+                                  .ignoringExpectedNullFields()
+                                  .isEqualTo(expectedComments);
+
+    }
 }
+
