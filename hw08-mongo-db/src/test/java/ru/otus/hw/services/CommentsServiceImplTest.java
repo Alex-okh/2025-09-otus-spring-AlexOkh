@@ -32,6 +32,11 @@ class CommentsServiceImplTest {
 
     private List<Book> testBooks;
 
+    private static List<Comment> getDbcomments() {
+        var books = getDbBooks();
+        return getDbComments(books);
+    }
+
     private static List<Comment> getDbComments(List<Book> books) {
         return IntStream.range(0, 8)
                         .boxed()
@@ -94,6 +99,29 @@ class CommentsServiceImplTest {
         }
     }
 
+    @Test
+    @DisplayName("Возвращать пустой лист при поиске по несуществующему ID книги")
+    void findAllByBookIdFail() {
+        for (var expectedBook : testBooks) {
+            var bookId = expectedBook.getId()+"_1";
+            var comments = commentsService.findAllByBookId(bookId);
+            assertThat(comments).isEmpty();
+
+        }
+    }
+
+    @ParameterizedTest
+    @DisplayName("Загружать комментарий по ID")
+    @MethodSource("getDbcomments")
+    void findCommentById(Comment expectedComment) {
+        var actualComment = commentsService.findCommentById(expectedComment.getId());
+        assertThat(actualComment).isPresent()
+                                 .get()
+                                 .usingRecursiveComparison()
+                                 .ignoringExpectedNullFields()
+                                 .isEqualTo(expectedComment);
+    }
+
     @DirtiesContext
     @Test
     @DisplayName("Удалять комментарий по его id")
@@ -106,29 +134,28 @@ class CommentsServiceImplTest {
     }
 
     @DirtiesContext
-    @Test
+    @ParameterizedTest
     @DisplayName("Обновлять комментарий по его id")
-    void updateCommentById() {
-        for (var comment : testComments) {
-            assertThat(commentsService.findCommentById(comment.getId())).isPresent()
-                                                                        .get()
-                                                                        .usingRecursiveComparison()
-                                                                        .ignoringExpectedNullFields()
-                                                                        .isEqualTo(comment);
+    @MethodSource("getDbcomments")
+    void updateCommentById(Comment comment) {
+        assertThat(commentsService.findCommentById(comment.getId())).isPresent()
+                                                                    .get()
+                                                                    .usingRecursiveComparison()
+                                                                    .ignoringExpectedNullFields()
+                                                                    .isEqualTo(comment);
 
-            var expectedText = comment.getText() + "_UPDATED";
-            comment.setText(expectedText);
-            var updatedComment = commentsService.updateCommentById(expectedText, comment.getId());
-            var actualComment = commentsService.findCommentById(comment.getId());
-            assertThat(actualComment).isPresent()
-                                     .get()
-                                     .usingRecursiveComparison()
-                                     .ignoringExpectedNullFields()
-                                     .isEqualTo(comment);
-            assertThat(updatedComment).usingRecursiveComparison()
-                                      .ignoringExpectedNullFields()
-                                      .isEqualTo(comment);
-        }
+        var expectedText = comment.getText() + "_UPDATED";
+        comment.setText(expectedText);
+        var updatedComment = commentsService.updateCommentById(expectedText, comment.getId());
+        var actualComment = commentsService.findCommentById(comment.getId());
+        assertThat(actualComment).isPresent()
+                                 .get()
+                                 .usingRecursiveComparison()
+                                 .ignoringExpectedNullFields()
+                                 .isEqualTo(comment);
+        assertThat(updatedComment).usingRecursiveComparison()
+                                  .ignoringExpectedNullFields()
+                                  .isEqualTo(comment);
     }
 
     @DirtiesContext
