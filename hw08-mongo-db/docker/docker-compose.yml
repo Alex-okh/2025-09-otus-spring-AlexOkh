@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:8.2.2
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=usr
+      - MONGO_INITDB_ROOT_PASSWORD=pwd
+      - MONGO_INITDB_DATABASE=hw-08
+    volumes:
+      - mongo_data:/data/db
+    command: [
+      "mongod",
+      "--bind_ip_all",
+      "--auth"
+    ]
+
+volumes:
+  mongo_data:
