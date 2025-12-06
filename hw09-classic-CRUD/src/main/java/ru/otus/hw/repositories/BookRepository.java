@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    @EntityGraph("book.html-authors-genres")
+    @EntityGraph("book-authors-genres")
     @Override
     Optional<Book> findById(Long id);
 
-    @EntityGraph("book.html-authors")
+    @EntityGraph("book-authors")
     List<Book> findAll();
 
 }
