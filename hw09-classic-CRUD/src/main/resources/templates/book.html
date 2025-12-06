@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Информация о книге</title>
+</head>
+
+<body>
+
+<header class="header">
+    <h1> Информация о книге</h1>
+</header>
+
+<div>
+    <th:block th:if="${book != null}">
+        <table>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Жанры</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${book.title()}"></td>
+                <td th:text="${book.author.fullName}"></td>
+                <td th:text="${book.genres()}"></td>
+            </tr>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+                <th>Комментарии:</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.text()}"></td>
+            </tr>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
+        <a th:href="@{/books/{id}(id=${book.id})}" method="delete">Удалить</a>
+    </th:block>
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей.</p>
+    </footer>
+</div>
+</body>
+</html>

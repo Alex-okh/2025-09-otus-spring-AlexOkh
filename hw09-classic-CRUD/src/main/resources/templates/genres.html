@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница жанров</title>
+</head>
+
+<body>
+
+<header class="header">
+    <h1> Управление жанрами</h1>
+    <p> Полный список жанров</p>
+</header>
+
+<div>
+    <th:block th:if="${genres != null and not genres.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Жанры:</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="genre : ${genres}">
+                <td th:text="${genre.name}"></td>
+                <td><a th:href="@{/genres/{id}/edit(id=${genre.id})}">Редактировать</a></td>
+                <td><a th:href="@{/genres/{id}(id=${genre.id})}" method="delete">Удалить</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/genres/create}">Добавить</a>
+    </th:block>
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей.</p>
+    </footer>
+</div>
+</body>
+</html>

@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
         var books = bookRepository.findAll();
         books.forEach(book -> book.getGenres()
                                   .size());
-        return bookRepository.findAll();
+        return books;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BookServiceImpl implements BookService {
     private Author getAuthor(long authorId) {
         return authorRepository.findById(authorId)
                                .orElseThrow(() -> new EntityNotFoundException(
-                                             "Author with id %d not found".formatted(authorId)));
+                                       "Author with id %d not found".formatted(authorId)));
 
     }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница книг</title>
+</head>
+
+<body>
+
+<header class="header">
+    <h1> Управление книгами</h1>
+    <p> Полный список книг</p>
+</header>
+
+<div>
+    <th:block th:if="${books != null and not books.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Жанры</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+                <td><a th:href="@{/book/{id}(id=${book.id})}" th:text = "${book.title()}"> </a></td>
+                <td th:text="${book.author.fullName}"></td>
+                <td th:text="${book.genres()}"></td>
+                <td><a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a></td>
+                <td><a th:href="@{/books/{id}(id=${book.id})}" method="delete">Удалить</a></td>
+            </tr>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/books/create}">Новая книга</a>
+    </th:block>
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей.</p>
+    </footer>
+</div>
+</body>
+</html>

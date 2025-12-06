@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница авторов</title>
+</head>
+
+<body>
+
+<header class="header">
+    <h1> Управление авторами</h1>
+    <p> Полный список авторов</p>
+</header>
+
+<div>
+    <th:block th:if="${authors != null and not authors.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Автор</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="author : ${authors}">
+                <td th:text="${author.fullName}"></td>
+                <td><a th:href="@{/authors/{id}/edit(id=${author.id})}">Редактировать</a></td>
+                <td><a th:href="@{/authors/{id}(id=${author.id})}" method="delete">Удалить</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/authors/create}">Добавить</a>
+    </th:block>
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей.</p>
+    </footer>
+</div>
+</body>
+</html>
