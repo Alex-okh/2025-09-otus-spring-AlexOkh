@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Страница авторов</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<header class="header">
-    <h1> Управление авторами</h1>
-    <p> Полный список авторов</p>
-</header>
+<div th:replace="~{fragments :: page-header('Управление авторами', 'Полный список авторов')}"></div>
 
-<div>
+<div class="container">
     <th:block th:if="${authors != null and not authors.isEmpty()}">
         <table>
             <thead>
@@ -28,11 +26,9 @@
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/authors/create}">Добавить</a>
+        <a th:href="@{/authors/create}" class="btn-add">Добавить</a>
     </th:block>
-    <footer class="footer">
-        <p>© 2025 Охрименко Алексей.</p>
-    </footer>
 </div>
+<div th:replace="~{fragments :: footer}"></div>
 </body>
 </html>

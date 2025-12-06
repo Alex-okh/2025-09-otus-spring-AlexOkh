@@ -2,22 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="/style.css">
     <title>Добро пожаловать | ДЗ №09 | Otus Spring</title>
 </head>
 
 <body>
 
-<header>
-    <h1>Добро пожаловать!</h1>
-    <p>Стартовая страница Домашнего Задания №09</p>
-</header>
-
 <div>
-    <h2>Начните работу с системой</h2>
-    <p>Выберите ссылку для перехода:</p>
+    <header class="header">
+        <h1>Библиотека книг</h1>
+        <nav>
+            <a href="/">Главная</a> |
+            <a href="/books">Книги</a> |
+            <a href="/authors">Авторы</a> |
+            <a href="/genres">Жанры</a>
+        </nav>
+    </header>
 </div>
 
-<div>
+<div class="container">
     <h3>Все книги</h3>
     <p>Просмотр и управление книгами</p>
     <a href="/books">Перейти на страницу с книгами</a>
@@ -29,9 +32,11 @@
     <p>Просмотр и управление жанрами</p>
     <a href="/genres">Перейти на страницу с жанрами</a>
 </div>
-<footer class="footer">
-    <p>© 2025 Охрименко Алексей. Все права защищены.</p>
-</footer>
+<div>
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей. Библиотека книг</p>
+    </footer>
+</div>
 </body>
 </html>
 

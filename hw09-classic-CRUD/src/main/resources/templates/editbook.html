@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Информация о книге</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Редактирование книги', '')}"></div>
+
+<div class="container">
+    <th:block th:if="${book != null}">
+        <form id="book-edit-form" action="editbook.html" th:action="@{/book}" th:method="post"
+              th:object="${book}">
+           <div class="row">
+                <input id="id-input" type="text" hidden="true" name="id" th:value="*{id}" value="1"/>
+            </div>
+            <div class="row">
+                <label for="book-title-input">Название:</label>
+                <input id="book-title-input" type="text" name="title" th:value="*{title}" value="1"/>
+            </div>
+            <div class="row">
+                <label for="author-select"> Автор:</label>
+                <select id="author-select" name="authorId">
+                    <option value="">-- Выберите автора --</option>
+                    <option th:each="authorDto : ${authors}"
+                            th:value="${authorDto.id()}"
+                            th:text="${authorDto.fullName()}"
+                            th:selected="${book.author != null and book.author.id == authorDto.id()}">
+                    </option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="genres-select"> Жанры:</label>
+                <select id="genres-select" name="genreIds" multiple size="10">
+                    <option th:each="genreDto : ${genres}"
+                            th:value="${genreDto.id()}"
+                            th:text="${genreDto.name()}"
+                            th:selected="${book.genres != null and book.genres.contains(genreDto.name())}">
+                    </option>
+                </select>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-save"></i> Сохранить
+                </button>
+                <a th:href="@{/books}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Отменить
+                </a>
+            </div>
+
+        </form>
+    </th:block>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Страница книг</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<header class="header">
-    <h1> Управление книгами</h1>
-    <p> Полный список книг</p>
-</header>
+<div th:replace="~{fragments :: page-header('Просмотр библиотеки', 'Полный список книг')}"></div>
 
-<div>
+<div class="container">
     <th:block th:if="${books != null and not books.isEmpty()}">
         <table>
             <thead>
@@ -24,21 +22,26 @@
             </thead>
             <tbody>
             <tr th:each="book : ${books}">
-                <td><a th:href="@{/book/{id}(id=${book.id})}" th:text = "${book.title()}"> </a></td>
+                <td><a th:href="@{/book/{id}(id=${book.id})}" th:text="${book.title()}"> </a></td>
                 <td th:text="${book.author.fullName}"></td>
                 <td th:text="${book.genres()}"></td>
                 <td><a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a></td>
-                <td><a th:href="@{/books/{id}(id=${book.id})}" method="delete">Удалить</a></td>
+                <td>
+                    <form th:action="@{/books/{id}(id=${book.id})}" method="post" class="delete-form"
+                          th:attr="book-title = ${book.title()}"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить книгу ' + this.getAttribute('book-title') + '?');">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
             </tr>
             </td>
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/books/create}">Новая книга</a>
+        <a th:href="@{/books/create}" class="btn-add">Новая книга</a>
     </th:block>
-    <footer class="footer">
-        <p>© 2025 Охрименко Алексей.</p>
-    </footer>
 </div>
+<div th:replace="~{fragments :: footer}"></div>
 </body>
 </html>

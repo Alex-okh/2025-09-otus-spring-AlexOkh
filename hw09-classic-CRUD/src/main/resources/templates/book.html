@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Информация о книге</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
-<header class="header">
-    <h1> Информация о книге</h1>
-</header>
+<div th:replace="~{fragments :: page-header('Подробная информация о книге', '')}"></div>
 
-<div>
+<div class="container">
     <th:block th:if="${book != null}">
         <table>
             <thead>
@@ -45,12 +44,15 @@
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
-        <a th:href="@{/books/{id}(id=${book.id})}" method="delete">Удалить</a>
+        <a th:href="@{/books/{id}/edit(id=${book.id})}" >Редактировать</a>
+        <td>
+            <form th:action="@{/books/{id}(id=${book.id})}" method="post" class="delete-form" onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?');">
+                <input type="hidden" name="_method" value="DELETE"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
     </th:block>
-    <footer class="footer">
-        <p>© 2025 Охрименко Алексей.</p>
-    </footer>
 </div>
+<div th:replace="~{fragments :: footer}"></div>
 </body>
 </html>
