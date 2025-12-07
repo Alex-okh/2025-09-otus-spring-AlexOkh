@@ -38,7 +38,7 @@
                     <option th:each="genreDto : ${genres}"
                             th:value="${genreDto.id()}"
                             th:text="${genreDto.name()}"
-                            th:selected="${book.genres != null and book.genres.contains(genreDto.name())}">
+                            th:selected="${book.genres != null and book.genreIds().contains(genreDto.id())}">
                     </option>
                 </select>
             </div>
