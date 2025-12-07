@@ -17,7 +17,11 @@ public class BookMapper {
                             .stream()
                             .map(Genre::getName)
                             .collect(Collectors.joining(", "));
-        Set<Long> genreIds = book.getGenres().stream().mapToLong(Genre::getId).boxed().collect(Collectors.toSet());
+        Set<Long> genreIds = book.getGenres()
+                                 .stream()
+                                 .mapToLong(Genre::getId)
+                                 .boxed()
+                                 .collect(Collectors.toSet());
         return new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), genres, genreIds);
     }
 

@@ -15,7 +15,6 @@ import ru.otus.hw.mappers.BookMapper;
 import ru.otus.hw.mappers.CommentMapper;
 import ru.otus.hw.mappers.GenreMapper;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.models.Comment;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentsService;
@@ -58,6 +57,7 @@ public class BookController {
         model.addAttribute("genres", genres);
         return "editbook";
     }
+
     @GetMapping("/books/{id}/edit")
     public String editBook(Model model, @PathVariable int id) {
         var book = bookMapper.bookToDto(bookService.findById(id)
@@ -70,6 +70,7 @@ public class BookController {
         model.addAttribute("genres", genres);
         return "editbook";
     }
+
     @GetMapping("/book/{id}")
     public String showBook(Model model, @PathVariable int id) {
         var book = bookMapper.bookToDto(bookService.findById(id)
@@ -100,9 +101,7 @@ public class BookController {
     @PostMapping("/book/comment")
     public String saveComment(NewCommentDTO comment) {
         commentsService.save(comment);
-        return "redirect:/book/"+comment.bookId();
+        return "redirect:/book/" + comment.bookId();
     }
-
-
 
 }

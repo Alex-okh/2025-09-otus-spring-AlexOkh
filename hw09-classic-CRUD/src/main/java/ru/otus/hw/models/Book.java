@@ -21,8 +21,14 @@ import org.hibernate.annotations.BatchSize;
 import java.util.List;
 
 @Entity
-@NamedEntityGraph(name = "book-authors-genres", attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
-@NamedEntityGraph(name = "book-authors", attributeNodes = @NamedAttributeNode("author"))
+@NamedEntityGraph(
+        name = "book-authors-genres",
+        attributeNodes = {
+                @NamedAttributeNode("author"),
+                @NamedAttributeNode("genres")})
+@NamedEntityGraph(
+        name = "book-authors",
+        attributeNodes = @NamedAttributeNode("author"))
 @Getter
 @Setter
 @AllArgsConstructor
@@ -42,7 +48,9 @@ public class Book {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 10)
-    @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @JoinTable(name = "books_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
     @Override
