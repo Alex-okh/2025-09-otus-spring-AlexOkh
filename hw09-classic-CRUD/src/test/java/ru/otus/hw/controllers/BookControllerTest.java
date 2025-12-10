@@ -187,7 +187,6 @@ class BookControllerTest {
         when(bookService.create(any())).thenReturn(expectedBookDto);
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
-                                      .param("_method", "PUT")
                                       .param("title", paramTitle)
                                       .param("authorId", String.valueOf(paramAuthorId))
                                       .param("genreIds", "1")
@@ -210,6 +209,7 @@ class BookControllerTest {
         when(bookService.update(any())).thenReturn(expectedBookDto);
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
+                                      .param("_method", "PUT")
                                       .param("title", paramTitle)
                                       .param("authorId", String.valueOf(paramAuthorId))
                                       .param("genreIds", "1")

@@ -69,7 +69,7 @@ public class BookController {
         return "book";
     }
 
-    @PostMapping("/book")
+    @PutMapping("/book")
     public String updateBook(@Valid @ModelAttribute("book") BookDto book, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             var authors = authorService.findAll();
@@ -82,7 +82,7 @@ public class BookController {
         return "redirect:/books";
     }
 
-    @PutMapping("/book")
+    @PostMapping("/book")
     public String createBook(@Valid @ModelAttribute("book") BookDto book, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             var authors = authorService.findAll();

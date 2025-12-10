@@ -15,7 +15,7 @@
         <form id="book-edit-form" action="editbook.html" th:action="@{/book}" th:method="post"
               th:object="${book}">
             <input type="hidden" name="_method"
-                   th:value="${book.id == 0} ? 'PUT' : 'POST'" />
+                   th:value="${book.id != 0} ? 'PUT' : 'POST'" />
            <div class="row">
                 <input id="id-input" type="text" hidden="true" name="id" th:value="*{id}" value="1"/>
             </div>
