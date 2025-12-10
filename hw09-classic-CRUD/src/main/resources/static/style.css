@@ -635,3 +635,35 @@ td .delete-form button:hover {
 .bi-x-circle::before {
     content: "❌";
 }
+
+/* Стили для сообщений об ошибках */
+.errors {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 6px;
+    font-size: 0.85em;
+    font-weight: 500;
+    line-height: 1.4;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+.errors::before {
+    content: "⚠ ";
+    margin-right: 4px;
+    font-size: 0.9em;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
