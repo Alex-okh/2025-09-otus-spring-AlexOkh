@@ -56,6 +56,18 @@ class BookControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private AuthorMapper authorMapper;
+
+    @Autowired
+    private GenreMapper genreMapper;
+
+    @Autowired
+    private BookMapper bookMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
     @MockitoBean
     private BookService bookService;
 
@@ -84,7 +96,7 @@ class BookControllerTest {
                                        .map(Book::getTitle)
                                        .toList();
 
-        when(bookService.findAll()).thenReturn(dbBooks);
+        when(bookService.findAll()).thenReturn(bookMapper.bookToDto(dbBooks));
 
         this.mvc.perform(get("/books"))
                 .andExpect(status().isOk())
@@ -97,8 +109,8 @@ class BookControllerTest {
     @Test
     @DisplayName("Показывать страницу редактирования для новой книги")
     void createBook() throws Exception {
-        when(authorService.findAll()).thenReturn(dbAuthors);
-        when(genreService.findAll()).thenReturn(dbGenres);
+        when(authorService.findAll()).thenReturn(authorMapper.authorToDto(dbAuthors));
+        when(genreService.findAll()).thenReturn(genreMapper.genreToDto(dbGenres));
 
         this.mvc.perform(get("/books/create"))
                 .andExpect(status().isOk())
@@ -115,9 +127,9 @@ class BookControllerTest {
     @DisplayName("Показывать страницу редактирования")
     @MethodSource("ru.otus.hw.util.TestDataGenerator#getDbBooks")
     void editBook(Book expectedBook) throws Exception {
-        when(bookService.findById(expectedBook.getId())).thenReturn(Optional.of(expectedBook));
-        when(authorService.findAll()).thenReturn(dbAuthors);
-        when(genreService.findAll()).thenReturn(dbGenres);
+        when(bookService.findById(expectedBook.getId())).thenReturn(bookMapper.bookToDto(expectedBook));
+        when(authorService.findAll()).thenReturn(authorMapper.authorToDto(dbAuthors));
+        when(genreService.findAll()).thenReturn(genreMapper.genreToDto(dbGenres));
 
         this.mvc.perform(get("/books/" + expectedBook.getId() + "/edit"))
                 .andExpect(status().isOk())
@@ -146,8 +158,8 @@ class BookControllerTest {
                                                    .map(Comment::getText)
                                                    .toList();
 
-        when(bookService.findById(expectedBook.getId())).thenReturn(Optional.of(expectedBook));
-        when(commentsService.findAllByBookId(expectedBook.getId())).thenReturn(expectedComments);
+        when(bookService.findById(expectedBook.getId())).thenReturn(bookMapper.bookToDto(expectedBook));
+        when(commentsService.findAllByBookId(expectedBook.getId())).thenReturn(commentMapper.commentToDto(expectedComments));
 
         this.mvc.perform(get("/book/" + expectedBook.getId()))
                 .andExpect(status().isOk())
@@ -170,9 +182,13 @@ class BookControllerTest {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        Set<Long> paramGenres = Set.of(1L, 2L);
+        var expectedBookDto = bookMapper.bookToDto(
+                new Book(0,
+                         paramTitle,
+                         new Author(paramAuthorId, ""),
+                         List.of(new Genre(1L, ""), new Genre (2L, ""))));
 
-        when(bookService.create(paramTitle, paramAuthorId, paramGenres)).thenReturn(new Book());
+        when(bookService.create(any())).thenReturn(bookMapper.bookToDto(new Book()));
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
                                       .param("title", paramTitle)
@@ -183,7 +199,7 @@ class BookControllerTest {
                 .andExpect(view().name("redirect:/books"))
                 .andExpect(redirectedUrl("/books"));
 
-        verify(bookService).create(paramTitle, paramAuthorId, paramGenres);
+        verify(bookService).create(expectedBookDto);
     }
 
     @Test
@@ -192,9 +208,13 @@ class BookControllerTest {
         Long paramId = 1L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        Set<Long> paramGenres = Set.of(1L, 2L);
+        var expectedBookDto = bookMapper.bookToDto(
+                new Book(paramId,
+                         paramTitle,
+                         new Author(paramAuthorId, ""),
+                         List.of(new Genre(1L, ""), new Genre (2L, ""))));
 
-        when(bookService.update(paramId, paramTitle, paramAuthorId, paramGenres)).thenReturn(new Book());
+        when(bookService.update(any())).thenReturn(bookMapper.bookToDto(new Book()));
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
                                       .param("title", paramTitle)
@@ -205,7 +225,7 @@ class BookControllerTest {
                 .andExpect(view().name("redirect:/books"))
                 .andExpect(redirectedUrl("/books"));
 
-        verify(bookService).update(paramId, paramTitle, paramAuthorId, paramGenres);
+        verify(bookService).update(expectedBookDto);
     }
 
     @ParameterizedTest

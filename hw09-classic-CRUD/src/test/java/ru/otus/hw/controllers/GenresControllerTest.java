@@ -32,6 +32,8 @@ class GenresControllerTest {
 
     @MockitoBean
     private GenreService genreService;
+    @Autowired
+    private GenreMapper genreMapper;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +48,7 @@ class GenresControllerTest {
                                          .map(Genre::getName)
                                          .toList();
 
-        when(genreService.findAll()).thenReturn(dbGenres);
+        when(genreService.findAll()).thenReturn(genreMapper.genreToDto(dbGenres));
 
         this.mvc.perform(get("/genres"))
                 .andExpect(status().isOk())

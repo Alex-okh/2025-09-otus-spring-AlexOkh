@@ -30,6 +30,9 @@ class AuthorControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private AuthorMapper authorMapper;
+
     @MockitoBean
     private AuthorService authorService;
 
@@ -46,7 +49,7 @@ class AuthorControllerTest {
                                            .map(Author::getFullName)
                                            .toList();
 
-        when(authorService.findAll()).thenReturn(dbAuthors);
+        when(authorService.findAll()).thenReturn(authorMapper.authorToDto(dbAuthors));
 
         this.mvc.perform(get("/authors"))
                 .andExpect(status().isOk())
