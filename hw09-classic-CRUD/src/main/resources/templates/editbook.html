@@ -43,10 +43,12 @@
                     <option th:each="genreDto : ${genres}"
                             th:value="${genreDto.id()}"
                             th:text="${genreDto.name()}"
-                            th:selected="${book.genres != null and book.genreIds().contains(genreDto.id())}">
+                            th:selected="${book.genreIds != null and book.genreIds().contains(genreDto.id())}">
                     </option>
                 </select>
+                <div class="errors" th:if="${#fields.hasErrors('genreIds')}" th:errors="*{genreIds}">Wrong genres</div>
             </div>
+
             <div class="row">
                 <button type="submit" class="btn btn-success">
                     <i class="bi bi-save"></i> Сохранить
