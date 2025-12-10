@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.otus.hw.mappers.GenreMapper;
 import ru.otus.hw.services.GenreService;
 
 @Controller
@@ -12,11 +11,9 @@ import ru.otus.hw.services.GenreService;
 public class GenresController {
     private final GenreService genreService;
 
-    private final GenreMapper genreMapper;
-
     @GetMapping("/genres")
     public String showGenres(Model model) {
-        var genres = genreMapper.genreToDto(genreService.findAll());
+        var genres = genreService.findAll();
         model.addAttribute("genres", genres);
         return "genres";
     }

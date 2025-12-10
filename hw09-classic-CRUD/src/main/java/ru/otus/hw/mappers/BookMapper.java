@@ -1,7 +1,7 @@
 package ru.otus.hw.mappers;
 
 import org.springframework.stereotype.Component;
-import ru.otus.hw.dto.BookDTO;
+import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class BookMapper {
 
-    public BookDTO bookToDto(Book book) {
+    public BookDto bookToDto(Book book) {
         String genres = book.getGenres()
                             .stream()
                             .map(Genre::getName)
@@ -22,11 +22,11 @@ public class BookMapper {
                                  .mapToLong(Genre::getId)
                                  .boxed()
                                  .collect(Collectors.toSet());
-        return new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), genres, genreIds);
+        return new BookDto(book.getId(), book.getTitle(), book.getAuthor().getFullName(), book.getAuthor().getId(), genres, genreIds);
     }
 
-    public List<BookDTO> bookToDto(List<Book> books) {
-        var bookDtos = new ArrayList<BookDTO>();
+    public List<BookDto> bookToDto(List<Book> books) {
+        var bookDtos = new ArrayList<BookDto>();
         for (var book : books) {
             bookDtos.add(bookToDto(book));
         }

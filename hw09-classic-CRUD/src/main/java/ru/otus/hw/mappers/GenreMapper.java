@@ -1,7 +1,7 @@
 package ru.otus.hw.mappers;
 
 import org.springframework.stereotype.Component;
-import ru.otus.hw.dto.GenreDTO;
+import ru.otus.hw.dto.GenreDto;
 import ru.otus.hw.models.Genre;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +9,15 @@ import java.util.List;
 @Component
 public class GenreMapper {
 
-    public GenreDTO genreToDto(Genre genre) {
-        return new GenreDTO(genre.getId(), genre.getName());
+    public GenreDto genreToDto(Genre genre) {
+        return new GenreDto(genre.getId(), genre.getName());
     }
 
-    public List<GenreDTO> genreToDto(List<Genre> genres) {
-        var genreDTOs = new ArrayList<GenreDTO>();
+    public List<GenreDto> genreToDto(List<Genre> genres) {
+        var genreDtos = new ArrayList<GenreDto>();
         for (var genre : genres) {
-            genreDTOs.add(genreToDto(genre));
+            genreDtos.add(genreToDto(genre));
         }
-        return genreDTOs;
+        return genreDtos;
     }
 }

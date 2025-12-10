@@ -1,23 +1,23 @@
 package ru.otus.hw.mappers;
 
 import org.springframework.stereotype.Component;
-import ru.otus.hw.dto.AuthorDTO;
+import ru.otus.hw.dto.AuthorDto;
 import ru.otus.hw.models.Author;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class AuthorMapper {
-    public AuthorDTO authorToDto(Author author) {
-        return new AuthorDTO(author.getId(), author.getFullName());
+    public AuthorDto authorToDto(Author author) {
+        return new AuthorDto(author.getId(), author.getFullName());
     }
 
-    public List<AuthorDTO> authorToDto(List<Author> authors) {
-        var authorDTOs = new ArrayList<AuthorDTO>();
+    public List<AuthorDto> authorToDto(List<Author> authors) {
+        var authorDtos = new ArrayList<AuthorDto>();
         for (var author : authors) {
-            authorDTOs.add(authorToDto(author));
+            authorDtos.add(authorToDto(author));
         }
-        return authorDTOs;
+        return authorDtos;
     }
 }
 

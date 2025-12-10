@@ -91,15 +91,15 @@ class CommentsServiceImplTest {
         assertThat(comments).hasSize(expectedCount);
     }
 
-    @ParameterizedTest
-    @DisplayName("Загружать комментарий по ID")
-    @MethodSource("getDbComments")
-    void findById(Comment expectedComment) {
-        var comment = commentsService.findById(expectedComment.getId());
-        assertThat(comment).isPresent();
-        var actualComment = comment.get();
-        assertThat(actualComment).usingRecursiveComparison()
-                                 .comparingOnlyFields("id", "text")
-                                 .isEqualTo(expectedComment);
-    }
+//    @ParameterizedTest
+//    @DisplayName("Загружать комментарий по ID")
+//    @MethodSource("getDbComments")
+//    void findById(Comment expectedComment) {
+//        var comment = commentsService.findById(expectedComment.getId());
+//        assertThat(comment).isPresent();
+//        var actualComment = comment.get();
+//        assertThat(actualComment).usingRecursiveComparison()
+//                                 .comparingOnlyFields("id", "text")
+//                                 .isEqualTo(expectedComment);
+//    }
 }

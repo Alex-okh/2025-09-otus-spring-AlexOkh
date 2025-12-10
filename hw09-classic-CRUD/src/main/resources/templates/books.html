@@ -23,7 +23,7 @@
             <tbody>
             <tr th:each="book : ${books}">
                 <td><a th:href="@{/book/{id}(id=${book.id})}" th:text="${book.title()}"> </a></td>
-                <td th:text="${book.author.fullName}"></td>
+                <td th:text="${book.authorName()}"></td>
                 <td th:text="${book.genres()}"></td>
                 <td><a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a></td>
                 <td>

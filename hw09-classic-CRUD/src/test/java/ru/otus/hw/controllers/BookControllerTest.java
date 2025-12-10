@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.hw.dto.NewCommentDTO;
+import ru.otus.hw.dto.NewCommentDto;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.BookMapper;
 import ru.otus.hw.mappers.CommentMapper;
@@ -166,7 +166,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("Создавать новую книгу при запросе с id = 0 ")
-    void saveBookNew() throws Exception {
+    void updateBookNew() throws Exception {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
@@ -188,7 +188,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("Обновлять  книгу при запросе с id != 0 ")
-    void saveBookUpdate() throws Exception {
+    void updateBookUpdate() throws Exception {
         Long paramId = 1L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
@@ -228,12 +228,12 @@ class BookControllerTest {
     @MethodSource("ru.otus.hw.util.TestDataGenerator#getDbBooks")
     void saveComment(Book book) throws Exception {
         doNothing().when(commentsService)
-                   .save(any(NewCommentDTO.class));
+                   .save(any(NewCommentDto.class));
 
         String expectedCommentText = "Новый комментарий";
         Long bookId = book.getId();
         String paramBookId = String.valueOf(bookId);
-        var expectedDto = new NewCommentDTO(bookId, expectedCommentText);
+        var expectedDto = new NewCommentDto(bookId, expectedCommentText);
 
         this.mvc.perform(post("/book/comment").param("bookId", paramBookId)
                                               .param("text", expectedCommentText))

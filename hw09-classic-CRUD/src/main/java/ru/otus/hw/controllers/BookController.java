@@ -1,5 +1,6 @@
 package ru.otus.hw.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,9 +8,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.otus.hw.dto.NewCommentDTO;
-import ru.otus.hw.dto.UpdateBookDTO;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import org.springframework.web.bind.annotation.PutMapping;
+import ru.otus.hw.dto.BookDto;
+import ru.otus.hw.dto.NewCommentDto;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.BookMapper;
 import ru.otus.hw.mappers.CommentMapper;
@@ -42,7 +43,7 @@ public class BookController {
 
     @GetMapping("/books")
     public String showAllBooks(Model model) {
-        var books = bookMapper.bookToDto(bookService.findAll());
+        var books = bookService.findAll();
         model.addAttribute("books", books);
         return "books";
     }
@@ -50,8 +51,8 @@ public class BookController {
     @GetMapping("/books/create")
     public String createBook(Model model) {
         var book = new Book();
-        var authors = authorMapper.authorToDto(authorService.findAll());
-        var genres = genreMapper.genreToDto(genreService.findAll());
+        var authors = authorService.findAll();
+        var genres = genreService.findAll();
         model.addAttribute("book", book);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
@@ -60,11 +61,9 @@ public class BookController {
 
     @GetMapping("/books/{id}/edit")
     public String editBook(Model model, @PathVariable int id) {
-        var book = bookMapper.bookToDto(bookService.findById(id)
-                                                   .orElseThrow(() -> new EntityNotFoundException(
-                                                           "Book with id %d not found.".formatted(id))));
-        var authors = authorMapper.authorToDto(authorService.findAll());
-        var genres = genreMapper.genreToDto(genreService.findAll());
+        var book = bookService.findById(id);
+        var authors = authorService.findAll();
+        var genres = genreService.findAll();
         model.addAttribute("book", book);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
@@ -73,22 +72,22 @@ public class BookController {
 
     @GetMapping("/book/{id}")
     public String showBook(Model model, @PathVariable int id) {
-        var book = bookMapper.bookToDto(bookService.findById(id)
-                                                   .orElseThrow(() -> new EntityNotFoundException(
-                                                           "Book with id %d not found.".formatted(id))));
-        var comments = commentMapper.commentToDTO(commentsService.findAllByBookId(id));
+        var book = bookService.findById(id);
+        var comments = commentsService.findAllByBookId(id);
         model.addAttribute("book", book);
         model.addAttribute("comments", comments);
         return "book";
     }
 
     @PostMapping("/book")
-    public String saveBook(UpdateBookDTO bookDto) {
-        if (bookDto.id() == 0) {
-            bookService.create(bookDto.title(), bookDto.authorId(), bookDto.genreIds());
-        } else {
-            bookService.update(bookDto.id(), bookDto.title(), bookDto.authorId(), bookDto.genreIds());
-        }
+    public String updateBook(@Valid BookDto bookDto) {
+        bookService.update(bookDto);
+        return "redirect:/books";
+    }
+
+    @PutMapping("/book")
+    public String createBook(BookDto bookDto) {
+        bookService.create(bookDto);
         return "redirect:/books";
     }
 
@@ -99,7 +98,7 @@ public class BookController {
     }
 
     @PostMapping("/book/comment")
-    public String saveComment(NewCommentDTO comment) {
+    public String saveComment(NewCommentDto comment) {
         commentsService.save(comment);
         return "redirect:/book/" + comment.bookId();
     }

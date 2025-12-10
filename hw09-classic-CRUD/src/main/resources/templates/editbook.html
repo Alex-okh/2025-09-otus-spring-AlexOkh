@@ -14,23 +14,28 @@
     <th:block th:if="${book != null}">
         <form id="book-edit-form" action="editbook.html" th:action="@{/book}" th:method="post"
               th:object="${book}">
+            <input type="hidden" name="_method"
+                   th:value="${book.id == 0} ? 'PUT' : 'POST'" />
            <div class="row">
                 <input id="id-input" type="text" hidden="true" name="id" th:value="*{id}" value="1"/>
             </div>
             <div class="row">
                 <label for="book-title-input">Название:</label>
                 <input id="book-title-input" type="text" name="title" th:value="*{title}" value="1"/>
+                <div class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Wrong title</div>
             </div>
             <div class="row">
                 <label for="author-select"> Автор:</label>
-                <select id="author-select" name="authorId">
+                <select id="author-select" th:field="*{authorId}">
                     <option value="">-- Выберите автора --</option>
                     <option th:each="authorDto : ${authors}"
                             th:value="${authorDto.id()}"
                             th:text="${authorDto.fullName()}"
-                            th:selected="${book.author != null and book.author.id == authorDto.id()}">
+                            th:selected="${authorId != null and authorId == authorDto.id()}">
                     </option>
                 </select>
+                <div class="errors" th:if="${#fields.hasErrors('authorId')}" th:errors="*{authorId}">Wrong author</div>
+
             </div>
             <div class="row">
                 <label for="genres-select"> Жанры:</label>
