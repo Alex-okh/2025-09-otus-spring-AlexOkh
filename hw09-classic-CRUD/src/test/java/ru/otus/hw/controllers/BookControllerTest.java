@@ -178,7 +178,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("Создавать новую книгу при запросе с id = 0 ")
-    void updateBookNew() throws Exception {
+    void createNewBook() throws Exception {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
