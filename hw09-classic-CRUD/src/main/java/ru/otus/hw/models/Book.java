@@ -48,7 +48,8 @@ public class Book {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 10)
-    @JoinTable(name = "books_genres",
+    @JoinTable(
+            name = "books_genres",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;

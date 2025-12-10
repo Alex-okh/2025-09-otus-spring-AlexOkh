@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.NewCommentDto;
 import ru.otus.hw.mappers.AuthorMapper;
 import ru.otus.hw.mappers.BookMapper;
@@ -25,7 +26,6 @@ import ru.otus.hw.services.CommentsService;
 import ru.otus.hw.services.GenreService;
 import ru.otus.hw.util.TestDataGenerator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
@@ -182,15 +182,12 @@ class BookControllerTest {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = bookMapper.bookToDto(
-                new Book(0,
-                         paramTitle,
-                         new Author(paramAuthorId, ""),
-                         List.of(new Genre(1L, ""), new Genre (2L, ""))));
+        var expectedBookDto = new BookDto(0L, paramTitle, null, 1L, null, Set.of(1L,2L));
 
-        when(bookService.create(any())).thenReturn(bookMapper.bookToDto(new Book()));
+        when(bookService.create(any())).thenReturn(expectedBookDto);
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
+                                      .param("_method", "PUT")
                                       .param("title", paramTitle)
                                       .param("authorId", String.valueOf(paramAuthorId))
                                       .param("genreIds", "1")
@@ -208,13 +205,9 @@ class BookControllerTest {
         Long paramId = 1L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = bookMapper.bookToDto(
-                new Book(paramId,
-                         paramTitle,
-                         new Author(paramAuthorId, ""),
-                         List.of(new Genre(1L, ""), new Genre (2L, ""))));
+        var expectedBookDto = new BookDto(1L, paramTitle, null, 1L, null, Set.of(1L,2L));
 
-        when(bookService.update(any())).thenReturn(bookMapper.bookToDto(new Book()));
+        when(bookService.update(any())).thenReturn(expectedBookDto);
 
         this.mvc.perform(post("/book").param("id", String.valueOf(paramId))
                                       .param("title", paramTitle)

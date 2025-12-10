@@ -22,7 +22,10 @@ public class BookMapper {
                                  .mapToLong(Genre::getId)
                                  .boxed()
                                  .collect(Collectors.toSet());
-        return new BookDto(book.getId(), book.getTitle(), book.getAuthor().getFullName(), book.getAuthor().getId(), genres, genreIds);
+
+        return new BookDto(book.getId(), book.getTitle(), book.getAuthor()
+                                                              .getFullName(), book.getAuthor()
+                                                                                  .getId(), genres, genreIds);
     }
 
     public List<BookDto> bookToDto(List<Book> books) {

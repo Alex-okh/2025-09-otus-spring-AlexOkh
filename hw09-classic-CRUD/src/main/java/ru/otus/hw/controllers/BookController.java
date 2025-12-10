@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.NewCommentDto;
-import ru.otus.hw.models.Book;
 import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentsService;
 import ru.otus.hw.services.GenreService;
 import java.util.Collections;
-import java.util.Set;
 
 @Controller
 @AllArgsConstructor
@@ -42,7 +40,7 @@ public class BookController {
 
     @GetMapping("/books/create")
     public String createBook(Model model) {
-        var book = new BookDto(0, "", "", 0L, "", Collections.EMPTY_SET);
+        var book = new BookDto(0, "", "", 0L, "", Collections.emptySet());
         var authors = authorService.findAll();
         var genres = genreService.findAll();
         model.addAttribute("book", book);

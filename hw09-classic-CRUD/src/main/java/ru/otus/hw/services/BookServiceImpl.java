@@ -57,8 +57,8 @@ public class BookServiceImpl implements BookService {
         var author = getAuthor(bookDto.authorId());
         var genres = getGenres(bookDto.genreIds());
         var book = bookRepository.findById(bookDto.id())
-                                 .orElseThrow(
-                                         () -> new EntityNotFoundException("Book with id %d not found".formatted(bookDto.id())));
+                                 .orElseThrow(() -> new EntityNotFoundException(
+                                         "Book with id %d not found".formatted(bookDto.id())));
         book.setTitle(bookDto.title());
         book.setAuthor(author);
         book.setGenres(genres);
