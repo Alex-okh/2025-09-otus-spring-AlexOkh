@@ -16,6 +16,6 @@ public record UpdateBookDto(
         @NotNull(message = "Выберите автора")
         Long authorId,
 
-        @NotEmpty(message = "Выбберите хотя бы один жанр")
+        @NotEmpty(message = "Выберите хотя бы один жанр")
         Set<Long> genreIds) {
 }
