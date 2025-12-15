@@ -17,6 +17,9 @@
         <module>hw06-jpa</module>
         <module>hw05-hard</module>
         <module>hw04-spring-shell</module>
+        <module>hw07-spring-data</module>
+        <module>hw08-mongo-db</module>
+        <module>hw09-classic-CRUD</module>
 
     </modules>
 </project>
