@@ -16,5 +16,5 @@ public record BookDto(@Min(value = 0, message = "Book id can not be negative") l
 
                       String genres,
 
-                      @NotEmpty(message = "Выберите хотя бы один жанр") Set<Long> genreIds) {
+                      @NotEmpty(message = "Выберите хотя бы один жанр") Set<@NotNull Long> genreIds) {
 }
