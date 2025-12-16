@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Страница авторов</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -11,24 +12,30 @@
 <div th:replace="~{fragments :: page-header('Управление авторами', 'Полный список авторов')}"></div>
 
 <div class="container">
-    <th:block th:if="${authors != null and not authors.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>Автор</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="author : ${authors}">
-                <td th:text="${author.fullName}"></td>
-                <td><a th:href="@{/authors/{id}/edit(id=${author.id})}">Редактировать</a></td>
-                <td><a th:href="@{/authors/{id}(id=${author.id})}" method="delete">Удалить</a></td>
-            </tr>
-            </tbody>
-        </table>
-        <a th:href="@{/authors/create}" class="btn-add">Добавить</a>
-    </th:block>
+    <table class="authors">
+        <thead>
+        <tr>
+            <th>Автор</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
 </div>
 <div th:replace="~{fragments :: footer}"></div>
+<script>
+    $(function () {
+        $.get('/api/authors').done(function (authors) {
+            authors.forEach(function (author) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${author.fullName}</td>
+                    </tr>
+                `)
+            })
+        })
+    })
+</script>
 </body>
 </html>

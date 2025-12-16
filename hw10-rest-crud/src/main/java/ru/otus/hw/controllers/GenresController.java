@@ -12,9 +12,7 @@ public class GenresController {
     private final GenreService genreService;
 
     @GetMapping("/genres")
-    public String showGenres(Model model) {
-        var genres = genreService.findAll();
-        model.addAttribute("genres", genres);
+    public String showGenres() {
         return "genres";
     }
 }

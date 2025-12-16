@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Страница жанров</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -11,24 +12,30 @@
 <div th:replace="~{fragments :: page-header('Управление жанрами', 'Полный список жанров')}"></div>
 
 <div class="container">
-    <th:block th:if="${genres != null and not genres.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>Жанры:</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="genre : ${genres}">
-                <td th:text="${genre.name}"></td>
-                <td><a th:href="@{/genres/{id}/edit(id=${genre.id})}">Редактировать</a></td>
-                <td><a th:href="@{/genres/{id}(id=${genre.id})}" method="delete">Удалить</a></td>
-            </tr>
-            </tbody>
-        </table>
-        <a th:href="@{/genres/create}" class="btn-add">Добавить</a>
-    </th:block>
+    <table>
+        <thead>
+        <tr>
+            <th>Жанры:</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 <div th:replace="~{fragments :: footer}"></div>
+
+<script>
+    $(function () {
+        $.get('/api/genres').done(function (genres) {
+            genres.forEach(function (genre) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${genre.name}</td>
+                    </tr>
+                `)
+            })
+        })
+    })
+</script>
 </body>
 </html>
