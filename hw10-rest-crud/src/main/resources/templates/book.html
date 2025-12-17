@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Информация о книге</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -11,57 +12,198 @@
 <div th:replace="~{fragments :: page-header('Подробная информация о книге', '')}"></div>
 
 <div class="container">
-    <th:block th:if="${book != null}">
-        <table>
-            <thead>
-            <tr>
-                <th>Название</th>
-                <th>Автор</th>
-                <th>Жанры</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td th:text="${book.title()}"></td>
-                <td th:text="${book.authorName()}"></td>
-                <td th:text="${book.genres()}"></td>
-            </tr>
-            </td>
-            </tr>
-            </tbody>
-        </table>
-        <table>
-            <thead>
-            <tr>
-                <th>Комментарии:</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="comment : ${comments}">
-                <td th:text="${comment.text()}"></td>
-            </tr>
-            <tr>
-                <td>
-                    <form th:action="@{/book/comment}" method="post">
-                        <input type="hidden" name="bookId" th:value="${book.id}">
-                        <input type="text" name="text" placeholder="Ваш комментарий" required>
-                        <button type="submit" class="btn-edit">Добавить комментарий</button>
-                    </form>
-                </td>
-            </tr>
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Жанры</th>
+        </tr>
+        </thead>
+        <tbody id="book-info">
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        <tr>
+            <th>Комментарии:</th>
+        </tr>
+        </thead>
+        <tbody id="comments-list">
+        </tbody>
+    </table>
 
-            </tbody>
-        </table>
-        <a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
-        <td>
-            <form th:action="@{/books/{id}(id=${book.id})}" method="post" class="delete-form"
-                  onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?');">
-                <input type="hidden" name="_method" value="DELETE"/>
-                <button type="submit">Удалить</button>
-            </form>
-        </td>
-    </th:block>
+    <!-- Форма для добавления комментария -->
+    <div class="add-comment-section">
+        <h3>Добавить комментарий</h3>
+        <form id="comment-form">
+            <div class="form-group">
+                <textarea id="comment-text" rows="4" cols="50" placeholder="Введите ваш комментарий" required></textarea>
+            </div>
+            <button type="submit" class="btn">Добавить</button>
+        </form>
+    </div>
+
+    <a href="#" id="edit-link">Редактировать</a>
 </div>
 <div th:replace="~{fragments :: footer}"></div>
+
+<script>
+    $(function () {
+        var pathSegments = window.location.pathname.split('/');
+        var bookId = pathSegments[pathSegments.length - 1]; // последний сегмент
+
+        // Функция для загрузки комментариев
+        function loadComments() {
+            $('#comments-list').empty(); // Очищаем текущие комментарии
+
+            $.get("/api/books/" + bookId + "/comments")
+                .done(function (comments) {
+                    // Проверяем, является ли ответ массивом
+                    if (Array.isArray(comments) && comments.length > 0) {
+                        comments.forEach(function(comment) {
+                            $('#comments-list').append(`
+                                <tr>
+                                    <td>${comment.text || ''}</td>
+                                </tr>
+                            `);
+                        });
+                    } else if (comments && comments.text) {
+                        // Если приходит один объект комментария
+                        $('#comments-list').append(`
+                            <tr>
+                                <td>${comments.text}</td>
+                            </tr>
+                        `);
+                    } else {
+                        // Если комментариев нет
+                        $('#comments-list').append(`
+                            <tr>
+                                <td>Комментариев пока нет</td>
+                            </tr>
+                        `);
+                    }
+                })
+                .fail(function (error) {
+                    console.error("Ошибка при загрузке комментариев:", error);
+                    $('#comments-list').append(`
+                        <tr>
+                            <td>Не удалось загрузить комментарии</td>
+                        </tr>
+                    `);
+                });
+        }
+
+        // Загрузка информации о книге
+        $.get("/api/books/" + bookId)
+            .done(function (book) {
+                $('#book-info').append(`
+                    <tr>
+                        <td>${book.title}</td>
+                        <td>${book.authorName}</td>
+                        <td>${book.genres}</td>
+                    </tr>
+                `);
+
+                // Устанавливаем ссылку для редактирования
+                $('#edit-link').attr('href', '/books/' + bookId + '/edit');
+            })
+            .fail(function (error) {
+                console.error("Ошибка при загрузке книги:", error);
+            });
+
+        // Загрузка комментариев при открытии страницы
+        loadComments();
+
+        // Обработчик формы добавления комментария
+        $('#comment-form').on('submit', function(event) {
+            event.preventDefault(); // Отменяем стандартное поведение формы
+
+            var commentText = $('#comment-text').val().trim();
+
+            if (!commentText) {
+                alert('Пожалуйста, введите текст комментария');
+                return;
+            }
+
+            // Отправляем POST запрос
+            $.ajax({
+                url: "/api/books/" + bookId + "/comments",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ text: commentText }),
+                success: function(response) {
+                    // Очищаем поле ввода
+                    $('#comment-text').val('');
+
+                    // Перезагружаем список комментариев
+                    loadComments();
+
+                    // Показываем сообщение об успехе
+                    alert('Комментарий успешно добавлен!');
+                },
+                error: function(error) {
+                    console.error("Ошибка при добавлении комментария:", error);
+                    alert('Ошибка при добавлении комментария: ' + error.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .add-comment-section {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .add-comment-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    textarea {
+        width: 100%;
+        max-width: 500px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 14px;
+    }
+
+    .btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn:hover {
+        background-color: #45a049;
+    }
+
+    #edit-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #2196F3;
+        text-decoration: none;
+    }
+
+    #edit-link:hover {
+        text-decoration: underline;
+    }
+</style>
 </body>
 </html>

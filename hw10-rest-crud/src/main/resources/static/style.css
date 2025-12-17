@@ -636,8 +636,9 @@ td .delete-form button:hover {
     content: "❌";
 }
 
-/* Стили для сообщений об ошибках */
+/* Добавлены после существующих стилей .errors */
 .errors {
+    display: none; /* Скрываем по умолчанию */
     color: #dc2626;
     background-color: #fef2f2;
     border: 1px solid #fecaca;
@@ -651,10 +652,8 @@ td .delete-form button:hover {
     animation: fadeIn 0.3s ease;
 }
 
-.errors::before {
-    content: "⚠ ";
-    margin-right: 4px;
-    font-size: 0.9em;
+.errors:not(:empty) {
+    display: block; /* Показываем только если не пустой */
 }
 
 @keyframes fadeIn {
