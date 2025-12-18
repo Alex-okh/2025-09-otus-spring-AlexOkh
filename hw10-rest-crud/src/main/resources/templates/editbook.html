@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Редактирование книги</title>
-    <link rel="stylesheet" href="/style.css">
+    <link href="/style.css" rel="stylesheet">
     <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
 
@@ -18,11 +18,11 @@
 
     <form id="book-edit-form" style="display: none;">
         <div class="row">
-            <input id="id-input" type="hidden" name="id" value=""/>
+            <input id="id-input" name="id" type="hidden" value=""/>
         </div>
         <div class="row">
             <label for="book-title-input">Название:</label>
-            <input id="book-title-input" type="text" name="title" value="" required/>
+            <input id="book-title-input" name="title" required type="text" value=""/>
 
         </div>
         <div class="row">
@@ -34,16 +34,16 @@
         </div>
         <div class="row">
             <label for="genres-select">Жанры (удерживайте Ctrl для выбора нескольких):</label>
-            <select id="genres-select" name="genreIds" multiple size="10" required>
+            <select id="genres-select" multiple name="genreIds" required size="10">
             </select>
 
         </div>
 
         <div class="row form-buttons">
-            <button type="submit" class="btn btn-success">
+            <button class="btn btn-success" type="submit">
                 <i class="bi bi-save"></i> Сохранить
             </button>
-            <a href="/books" class="btn btn-outline-secondary">
+            <a class="btn btn-outline-secondary" href="/books">
                 <i class="bi bi-x-circle"></i> Отменить
             </a>
         </div>
@@ -52,9 +52,9 @@
 <div th:replace="~{fragments :: footer}"></div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Получаем ID книги из URL
-        var pathSegments = window.location.pathname.split('/').filter(function(segment) {
+        var pathSegments = window.location.pathname.split('/').filter(function (segment) {
             return segment !== '';
         });
 
@@ -94,14 +94,13 @@
             var authorsData = null;
             var genresData = null;
             var bookData = null;
-            var error = null;
 
             // Загружаем авторов
             return $.ajax({
                 url: '/api/authors',
                 method: 'GET',
                 dataType: 'json'
-            }).then(function(authors) {
+            }).then(function (authors) {
                 authorsData = authors;
                 // Загружаем жанры
                 return $.ajax({
@@ -109,7 +108,7 @@
                     method: 'GET',
                     dataType: 'json'
                 });
-            }).then(function(genres) {
+            }).then(function (genres) {
                 genresData = genres;
                 // Если режим редактирования, загружаем книгу
                 if (isEditMode && bookId) {
@@ -117,14 +116,14 @@
                         url: '/api/books/' + bookId,
                         method: 'GET',
                         dataType: 'json'
-                    }).then(function(book) {
+                    }).then(function (book) {
                         bookData = book;
                         return {authors: authorsData, genres: genresData, book: bookData};
                     });
                 } else {
                     return {authors: authorsData, genres: genresData, book: null};
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
+            }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.error('Ошибка загрузки данных:', textStatus, errorThrown);
                 $loading.html('<div class="errors">Ошибка при загрузке данных. ' +
                     '<a href="javascript:location.reload()">Обновить страницу</a></div>');
@@ -144,7 +143,7 @@
             $authorSelect.append('<option value="">-- Выберите автора --</option>');
 
             if (data.authors && Array.isArray(data.authors)) {
-                data.authors.forEach(function(author) {
+                data.authors.forEach(function (author) {
                     $authorSelect.append(
                         $('<option></option>')
                             .val(author.id)
@@ -157,7 +156,7 @@
             $genresSelect.empty();
 
             if (data.genres && Array.isArray(data.genres)) {
-                data.genres.forEach(function(genre) {
+                data.genres.forEach(function (genre) {
                     $genresSelect.append(
                         $('<option></option>')
                             .val(genre.id)
@@ -189,7 +188,7 @@
                             if (data.book.genreIds instanceof Set) {
                                 genreIds = Array.from(data.book.genreIds).map(String);
                             } else if (data.book.genreIds.forEach) {
-                                data.book.genreIds.forEach(function(id) {
+                                data.book.genreIds.forEach(function (id) {
                                     genreIds.push(String(id));
                                 });
                             }
@@ -205,7 +204,7 @@
 
                     // Если не установились, устанавливаем вручную
                     if (!$genresSelect.val() || $genresSelect.val().length === 0) {
-                        $genresSelect.find('option').each(function() {
+                        $genresSelect.find('option').each(function () {
                             var $option = $(this);
                             if (genreIds.includes($option.val())) {
                                 $option.prop('selected', true);
@@ -233,7 +232,7 @@
         }
 
         // Обработчик отправки формы
-        $form.on('submit', function(e) {
+        $form.on('submit', function (e) {
             e.preventDefault();
 
             // Очищаем предыдущие ошибки
@@ -265,7 +264,9 @@
 
             // Преобразуем genreIds в массив чисел
             var genreIdsArray = Array.isArray(genreIds) ?
-                genreIds.map(function(id) { return parseInt(id); }) :
+                genreIds.map(function (id) {
+                    return parseInt(id);
+                }) :
                 [parseInt(genreIds)];
 
             // Определяем данные для отправки в зависимости от режима
@@ -307,7 +308,7 @@
                 method: method,
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
-                success: function(response) {
+                success: function (response) {
                     console.log('Success response:', response);
                     // Редирект на страницу книги или список книг
                     if (response && response.id) {
@@ -318,7 +319,7 @@
                         window.location.href = '/books';
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error('Error response:', xhr);
                     // Обработка ошибок валидации
                     if (xhr.status === 400 && xhr.responseJSON) {
@@ -335,10 +336,10 @@
         });
 
         // Загружаем данные и инициализируем форму
-        loadData().then(function(data) {
+        loadData().then(function (data) {
             console.log('Data loaded successfully:', data);
             initForm(data);
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.error('Failed to load data:', error);
         });
     });

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.otus.hw.dto.GenreDto;
-import ru.otus.hw.models.Genre;
 import ru.otus.hw.services.GenreService;
 import java.util.List;
 

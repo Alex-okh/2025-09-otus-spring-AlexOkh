@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Информация о книге</title>
-    <link rel="stylesheet" href="/style.css">
+    <link href="/style.css" rel="stylesheet">
     <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
@@ -38,9 +38,10 @@
         <h3>Добавить комментарий</h3>
         <form id="comment-form">
             <div class="form-group">
-                <textarea id="comment-text" rows="4" cols="50" placeholder="Введите ваш комментарий" required></textarea>
+                <textarea cols="50" id="comment-text" placeholder="Введите ваш комментарий" required
+                          rows="4"></textarea>
             </div>
-            <button type="submit" class="btn">Добавить</button>
+            <button class="btn" type="submit">Добавить</button>
         </form>
     </div>
 
@@ -61,7 +62,7 @@
                 .done(function (comments) {
                     // Проверяем, является ли ответ массивом
                     if (Array.isArray(comments) && comments.length > 0) {
-                        comments.forEach(function(comment) {
+                        comments.forEach(function (comment) {
                             $('#comments-list').append(`
                                 <tr>
                                     <td>${comment.text || ''}</td>
@@ -116,7 +117,7 @@
         loadComments();
 
         // Обработчик формы добавления комментария
-        $('#comment-form').on('submit', function(event) {
+        $('#comment-form').on('submit', function (event) {
             event.preventDefault(); // Отменяем стандартное поведение формы
 
             var commentText = $('#comment-text').val().trim();
@@ -131,8 +132,8 @@
                 url: "/api/books/" + bookId + "/comments",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ text: commentText }),
-                success: function(response) {
+                data: JSON.stringify({text: commentText}),
+                success: function (response) {
                     // Очищаем поле ввода
                     $('#comment-text').val('');
 
@@ -142,7 +143,7 @@
                     // Показываем сообщение об успехе
                     alert('Комментарий успешно добавлен!');
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error("Ошибка при добавлении комментария:", error);
                     alert('Ошибка при добавлении комментария: ' + error.responseText);
                 }

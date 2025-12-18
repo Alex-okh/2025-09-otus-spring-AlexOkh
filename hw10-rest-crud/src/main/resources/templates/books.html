@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Страница книг</title>
-    <link rel="stylesheet" href="/style.css">
+    <link href="/style.css" rel="stylesheet">
     <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
@@ -23,7 +23,7 @@
         <tbody>
         </tbody>
     </table>
-    <a th:href="@{/books/create}" class="btn-add">Новая книга</a>
+    <a class="btn-add" th:href="@{/books/create}">Новая книга</a>
 </div>
 <div th:replace="~{fragments :: footer}"></div>
 <script>

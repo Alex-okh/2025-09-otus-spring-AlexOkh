@@ -10,5 +10,5 @@ public interface CommentsService {
 
     CommentDto findById(long id);
 
-    void save(NewCommentDto commentDto);
+    CommentDto save(NewCommentDto commentDto);
 }

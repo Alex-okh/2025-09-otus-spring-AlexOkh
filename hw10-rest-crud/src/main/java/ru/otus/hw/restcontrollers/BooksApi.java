@@ -1,6 +1,8 @@
 package ru.otus.hw.restcontrollers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,22 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.NewBookDto;
 import ru.otus.hw.dto.UpdateBookDto;
-import ru.otus.hw.services.AuthorService;
 import ru.otus.hw.services.BookService;
-import ru.otus.hw.services.CommentsService;
-import ru.otus.hw.services.GenreService;
+
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 public class BooksApi {
     private final BookService bookService;
-
-    private final CommentsService commentsService;
-
-    private final AuthorService authorService;
-
-    private final GenreService genreService;
 
     @GetMapping("/api/books")
     public List<BookDto> getAllBooks() {
@@ -44,12 +38,16 @@ public class BooksApi {
     }
 
     @PutMapping("api/books")
-    public void updateBook(@RequestBody UpdateBookDto book) {
-       bookService.update(book);
+    public ResponseEntity<BookDto> updateBook(@RequestBody UpdateBookDto book) {
+        var updatedBook = bookService.update(book);
+        return ResponseEntity.ok()
+                             .body(updatedBook);
     }
 
     @PostMapping("api/books")
-    public void createBook(@RequestBody NewBookDto book) {
-        bookService.create(book);
+    public ResponseEntity<BookDto> createBook(@RequestBody NewBookDto book) {
+        var createdBook = bookService.create(book);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(createdBook);
     }
 }

@@ -29,11 +29,12 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void save(NewCommentDto commentDto) {
+    public CommentDto save(NewCommentDto commentDto) {
         var book = bookRepository.findById(commentDto.bookId());
         var comment = new Comment(0, commentDto.text(), book.orElseThrow(
                 () -> new EntityNotFoundException("Book with id %d not found".formatted(commentDto.bookId()))));
         commentRepository.save(comment);
+        return commentMapper.commentToDto(comment);
     }
 
     @Override

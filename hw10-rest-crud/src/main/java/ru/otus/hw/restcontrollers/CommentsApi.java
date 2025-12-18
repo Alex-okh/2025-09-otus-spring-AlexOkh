@@ -1,6 +1,8 @@
 package ru.otus.hw.restcontrollers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +25,10 @@ public class CommentsApi {
     }
 
     @PostMapping("/api/books/{bookId}/comments")
-    public void saveComment(@PathVariable long bookId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> saveComment(@PathVariable long bookId, @RequestBody CommentDto commentDto) {
         var newComment = new NewCommentDto(bookId, commentDto.text());
-        commentsService.save(newComment);
+        var savedComment = commentsService.save(newComment);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(savedComment);
     }
 }
