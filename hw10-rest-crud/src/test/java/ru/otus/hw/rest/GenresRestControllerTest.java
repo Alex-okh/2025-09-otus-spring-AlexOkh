@@ -1,4 +1,4 @@
-package ru.otus.hw.restcontrollers;
+package ru.otus.hw.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.hw.dto.AuthorDto;
-import ru.otus.hw.mappers.AuthorMapper;
-import ru.otus.hw.services.AuthorService;
+import ru.otus.hw.dto.GenreDto;
+import ru.otus.hw.mappers.GenreMapper;
+import ru.otus.hw.services.GenreService;
 import ru.otus.hw.util.TestDataGenerator;
 import java.util.List;
 import static org.mockito.Mockito.times;
@@ -21,14 +21,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({AuthorsApi.class, AuthorMapper.class})
-@DisplayName("API авторов должен:")
-class AuthorApiTest {
+@WebMvcTest({GenresRestController.class, GenreMapper.class})
+@DisplayName("API жанров должен:")
+class GenresRestControllerTest {
 
-    @Autowired
-    private AuthorMapper am;
-
-    private List<AuthorDto> authorsDto;
+    private List<GenreDto> genres;
 
     @Autowired
     private MockMvc mvc;
@@ -36,39 +33,42 @@ class AuthorApiTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private GenreMapper gm;
+
     @MockitoBean
-    private AuthorService authorService;
+    private GenreService genreService;
 
     @BeforeEach
     void setUp() {
-        authorsDto = am.authorToDto(TestDataGenerator.getDbAuthors());
+        genres = gm.genreToDto(TestDataGenerator.getDbGenres());
     }
 
-    @DisplayName("Возвращать массив авторов при GET /api/authors")
+    @DisplayName("Возвращать массив жанров при GET /api/genres")
     @Test
-    void authorApiTest() throws Exception {
+    void genresrApiTest() throws Exception {
 
-        when(authorService.findAll()).thenReturn(authorsDto);
+        when(genreService.findAll()).thenReturn(genres);
 
-        this.mvc.perform(get("/api/authors"))
+        this.mvc.perform(get("/api/genres"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(authorsDto)));
+                .andExpect(content().json(objectMapper.writeValueAsString(genres)));
 
-        verify(authorService, times(1)).findAll();
+        verify(genreService, times(1)).findAll();
     }
 
-    @DisplayName("Возвращать пустой массив при GET /api/authors и отсутствии авторов")
+    @DisplayName("Возвращать пустой массив при GET /api/genres и отсутствии авторов")
     @Test
     void authorApiEmptyTest() throws Exception {
 
-        when(authorService.findAll()).thenReturn(List.of());
+        when(genreService.findAll()).thenReturn(List.of());
 
-        this.mvc.perform(get("/api/authors"))
+        this.mvc.perform(get("/api/genres"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("[]"));
 
-        verify(authorService, times(1)).findAll();
+        verify(genreService, times(1)).findAll();
     }
 }

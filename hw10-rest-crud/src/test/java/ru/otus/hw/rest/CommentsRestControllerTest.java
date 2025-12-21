@@ -1,4 +1,4 @@
-package ru.otus.hw.restcontrollers;
+package ru.otus.hw.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.dto.CommentDto;
 import ru.otus.hw.dto.NewCommentDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.BookNotFoundException;
 import ru.otus.hw.mappers.CommentMapper;
 import ru.otus.hw.services.CommentsService;
 import ru.otus.hw.util.TestDataGenerator;
@@ -24,9 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({CommentsApi.class, CommentMapper.class})
+@WebMvcTest({CommentsRestController.class, CommentMapper.class})
 @DisplayName("API комментариев должен: ")
-class CommentsApiTest {
+class CommentsRestControllerTest {
 
     @Autowired
     CommentMapper cm;
@@ -62,7 +62,7 @@ class CommentsApiTest {
         verify(commentsService).findAllByBookId(bookId);
     }
 
-    @DisplayName("Возвращать пустой массив комментариев по id книги если комментариев нет")
+    @DisplayName("Возвращать пустой массив комментариев по id если книги или комментариев нет")
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
     void getEmptyCommentsByBookId(Long bookId) throws Exception {
@@ -101,7 +101,7 @@ class CommentsApiTest {
         var newComment = new NewCommentDto(bookId, "New Comment");
 
         when(commentsService.save(newComment)).thenThrow(
-                new EntityNotFoundException("Book with id %d not found".formatted(bookId)));
+                new BookNotFoundException("Book with id %d not found".formatted(bookId)));
 
         mvc.perform(post("/api/books/{bookId}/comments", bookId).contentType(MediaType.APPLICATION_JSON)
                                                                 .content(objectMapper.writeValueAsString(

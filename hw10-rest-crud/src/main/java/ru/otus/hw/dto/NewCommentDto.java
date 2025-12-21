@@ -1,8 +1,8 @@
 package ru.otus.hw.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
-public record NewCommentDto(@NotNull(message = "Book id should not be null") Long bookId,
+public record NewCommentDto(Long bookId,
 
-                            String text) {
+                            @NotBlank(message = "Comment text should not be blank") String text) {
 }

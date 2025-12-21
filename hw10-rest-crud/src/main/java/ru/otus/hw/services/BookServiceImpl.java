@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.BookDto;
 import ru.otus.hw.dto.NewBookDto;
 import ru.otus.hw.dto.UpdateBookDto;
+import ru.otus.hw.exceptions.BookNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.mappers.BookMapper;
 import ru.otus.hw.models.Author;
@@ -33,7 +34,7 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public BookDto findById(long id) {
         return bookMapper.bookToDto(bookRepository.findById(id)
-                                                  .orElseThrow(() -> new EntityNotFoundException(
+                                                  .orElseThrow(() -> new BookNotFoundException(
                                                           "Book with id %d not found".formatted(id))));
     }
 
@@ -59,7 +60,7 @@ public class BookServiceImpl implements BookService {
         var author = getAuthor(bookDto.authorId());
         var genres = getGenres(bookDto.genreIds());
         var book = bookRepository.findById(bookDto.id())
-                                 .orElseThrow(() -> new EntityNotFoundException(
+                                 .orElseThrow(() -> new BookNotFoundException(
                                          "Book with id %d not found".formatted(bookDto.id())));
         book.setTitle(bookDto.title());
         book.setAuthor(author);

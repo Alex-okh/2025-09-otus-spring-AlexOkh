@@ -1,4 +1,4 @@
-package ru.otus.hw.restcontrollers;
+package ru.otus.hw.rest;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class AuthorsApi {
+public class AuthorsRestController {
 
     private final AuthorService authorService;
 

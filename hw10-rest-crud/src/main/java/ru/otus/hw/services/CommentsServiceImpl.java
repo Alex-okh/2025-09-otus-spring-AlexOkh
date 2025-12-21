@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.CommentDto;
 import ru.otus.hw.dto.NewCommentDto;
+import ru.otus.hw.exceptions.BookNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.mappers.CommentMapper;
 import ru.otus.hw.models.Comment;
@@ -32,7 +33,7 @@ public class CommentsServiceImpl implements CommentsService {
     public CommentDto save(NewCommentDto commentDto) {
         var book = bookRepository.findById(commentDto.bookId());
         var comment = new Comment(0, commentDto.text(), book.orElseThrow(
-                () -> new EntityNotFoundException("Book with id %d not found".formatted(commentDto.bookId()))));
+                () -> new BookNotFoundException("Book with id %d not found".formatted(commentDto.bookId()))));
         commentRepository.save(comment);
         return commentMapper.commentToDto(comment);
     }
