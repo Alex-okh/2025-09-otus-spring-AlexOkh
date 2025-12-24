@@ -20,6 +20,7 @@
         <module>hw07-spring-data</module>
         <module>hw08-mongo-db</module>
         <module>hw09-classic-CRUD</module>
+        <module>hw10-rest-crud</module>
 
     </modules>
 </project>
