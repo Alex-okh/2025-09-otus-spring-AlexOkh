@@ -10,7 +10,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.hw.hw11webflux.dto.CommentDto;
 import ru.otus.hw.hw11webflux.dto.NewCommentDto;
-import ru.otus.hw.hw11webflux.models.Comment;
 import ru.otus.hw.hw11webflux.service.CommentService;
 
 @RestController

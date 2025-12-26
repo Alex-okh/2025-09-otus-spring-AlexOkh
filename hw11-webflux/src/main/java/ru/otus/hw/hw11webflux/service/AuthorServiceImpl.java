@@ -17,6 +17,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Flux<AuthorDto> findAll() {
-        return authorRepository.findAll().map(authorMapper::toDto);
+        return authorRepository.findAll()
+                               .map(authorMapper::toDto);
     }
 }

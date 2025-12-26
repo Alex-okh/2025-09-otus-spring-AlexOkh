@@ -1,4 +1,3 @@
-// DataInitializer.java
 package ru.otus.hw.hw11webflux.config;
 
 import lombok.RequiredArgsConstructor;
@@ -28,10 +27,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataInitializer {
 
     private final AuthorRepository authorRepository;
+
     private final GenreRepository genreRepository;
+
     private final BookRepository bookRepository;
+
     private final CommentRepository commentRepository;
-    private final ReactiveMongoTemplate mongoTemplate;
+
 
     @EventListener(ApplicationReadyEvent.class)
     public Mono<Void> initializeData() {
@@ -156,10 +158,8 @@ public class DataInitializer {
                                           // Рэй Брэдбери (3 книги)
                                           createBook("451 градус по Фаренгейту", authors.get(10),
                                                      Set.of(genres.get(1), genres.get(4))),
-                                          createBook("Марсианские хроники", authors.get(10),
-                                                     Set.of(genres.get(4), genres.get(1))),
-                                          createBook("Вино из одуванчиков", authors.get(10),
-                                                     Set.of(genres.get(1), genres.get(6))),
+                                          createBook("Марсианские хроники", authors.get(10), Set.of(genres.get(4), genres.get(1))),
+                                          createBook("Вино из одуванчиков", authors.get(10), Set.of(genres.get(1), genres.get(6))),
 
                                           // Дополнительные книги
                                           createBook("Властелин колец: Братство кольца", authors.get(8),

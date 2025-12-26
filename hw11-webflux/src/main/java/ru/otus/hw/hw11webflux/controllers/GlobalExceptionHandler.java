@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleEntityNotFoundException(EntityNotFoundException e, WebRequest request) {
         log.error(e.getMessage());
         var error = new ErrorDto(LocalDateTime.now(), HttpStatus.NOT_FOUND, e.getMessage(),
-                                 request.getDescription(false).replace("uri=", ""));
+                                 request.getDescription(false)
+                                        .replace("uri=", ""));
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                              .body(error);
     }

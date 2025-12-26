@@ -3,9 +3,7 @@ package ru.otus.hw.hw11webflux.mappers;
 import org.springframework.stereotype.Component;
 import ru.otus.hw.hw11webflux.dto.GenreDto;
 import ru.otus.hw.hw11webflux.models.Genre;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component

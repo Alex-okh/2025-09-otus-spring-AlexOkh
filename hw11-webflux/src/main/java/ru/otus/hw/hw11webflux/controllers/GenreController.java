@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import ru.otus.hw.hw11webflux.dto.AuthorDto;
 import ru.otus.hw.hw11webflux.dto.GenreDto;
-import ru.otus.hw.hw11webflux.service.AuthorService;
 import ru.otus.hw.hw11webflux.service.GenreService;
 
 @RestController
