@@ -4,7 +4,7 @@ spring:
       authentication-database: admin
       username: usr
       password: pwd
-      database: hw-08
+      database: hw-11
       port: 27017
       host: localhost
   logging:

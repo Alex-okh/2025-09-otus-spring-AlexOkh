@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +20,6 @@ public class Book {
 
     private Author author;
 
-    private List<Genre> genreIds;
+    private Set<Genre> genres;
 
 }
