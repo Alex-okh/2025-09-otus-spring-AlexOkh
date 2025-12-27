@@ -22,6 +22,21 @@ public class ViewController {
     public String showBooks() {
         return "books";
     }
+
+    @GetMapping("/books/create")
+    public String createBook() {
+        return "editbook";
+    }
+
+    @GetMapping("/books/{id}/edit")
+    public String editBook() {
+        return "editbook";
+    }
+
+    @GetMapping("/books/{id}")
+    public String showBook() {
+        return "book";
+    }
 }
 
 

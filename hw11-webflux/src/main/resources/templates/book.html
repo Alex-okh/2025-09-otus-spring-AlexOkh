@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <title>Информация о книге</title>
     <link href="/style.css" rel="stylesheet">
-    <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -46,108 +45,122 @@
     </div>
 
     <a href="#" id="edit-link">Редактировать</a>
+    <a href="/books" style="margin-left: 20px;">Вернуться к списку книг</a>
 </div>
 <div th:replace="~{fragments :: footer}"></div>
 
 <script>
-    $(function () {
-        var pathSegments = window.location.pathname.split('/');
-        var bookId = pathSegments[pathSegments.length - 1]; // последний сегмент
+    document.addEventListener('DOMContentLoaded', async function() {
+        const pathSegments = window.location.pathname.split('/');
+        const bookId = pathSegments[pathSegments.length - 1];
 
         // Функция для загрузки комментариев
-        function loadComments() {
-            $('#comments-list').empty(); // Очищаем текущие комментарии
+        async function loadComments() {
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '';
 
-            $.get("/api/books/" + bookId + "/comments")
-                .done(function (comments) {
-                    // Проверяем, является ли ответ массивом
-                    if (Array.isArray(comments) && comments.length > 0) {
-                        comments.forEach(function (comment) {
-                            $('#comments-list').append(`
-                                <tr>
-                                    <td>${comment.text || ''}</td>
-                                </tr>
-                            `);
-                        });
-                    } else if (comments && comments.text) {
-                        // Если приходит один объект комментария
-                        $('#comments-list').append(`
-                            <tr>
-                                <td>${comments.text}</td>
-                            </tr>
-                        `);
-                    } else {
-                        // Если комментариев нет
-                        $('#comments-list').append(`
-                            <tr>
-                                <td>Комментариев пока нет</td>
-                            </tr>
-                        `);
-                    }
-                })
-                .fail(function (error) {
-                    console.error("Ошибка при загрузке комментариев:", error);
-                    $('#comments-list').append(`
-                        <tr>
-                            <td>Не удалось загрузить комментарии</td>
-                        </tr>
-                    `);
-                });
+            try {
+                const response = await fetch(`/api/flux/books/${bookId}/comments`);
+                if (!response.ok) throw new Error('Ошибка при загрузке комментариев');
+
+                const comments = await response.json();
+
+                if (Array.isArray(comments) && comments.length > 0) {
+                    comments.forEach(comment => {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.textContent = comment.text || '';
+                        row.appendChild(cell);
+                        commentsList.appendChild(row);
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.textContent = 'Комментариев пока нет';
+                    row.appendChild(cell);
+                    commentsList.appendChild(row);
+                }
+            } catch (error) {
+                console.error("Ошибка при загрузке комментариев:", error);
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.textContent = 'Не удалось загрузить комментарии';
+                row.appendChild(cell);
+                commentsList.appendChild(row);
+            }
         }
 
         // Загрузка информации о книге
-        $.get("/api/books/" + bookId)
-            .done(function (book) {
-                $('#book-info').append(`
-                    <tr>
-                        <td>${book.title}</td>
-                        <td>${book.authorName}</td>
-                        <td>${book.genres}</td>
-                    </tr>
-                `);
+        try {
+            const response = await fetch(`/api/flux/books/${bookId}`);
+            if (!response.ok) throw new Error('Ошибка при загрузке книги');
 
-                // Устанавливаем ссылку для редактирования
-                $('#edit-link').attr('href', '/books/' + bookId + '/edit');
-            })
-            .fail(function (error) {
-                console.error("Ошибка при загрузке книги:", error);
-            });
+            const book = await response.json();
+            const bookInfo = document.getElementById('book-info');
+
+            const row = document.createElement('tr');
+
+            const titleCell = document.createElement('td');
+            titleCell.textContent = book.title;
+            row.appendChild(titleCell);
+
+            const authorCell = document.createElement('td');
+            authorCell.textContent = book.author ? book.author.fullName : '';
+            row.appendChild(authorCell);
+
+            const genresCell = document.createElement('td');
+            genresCell.textContent = book.genres ?
+                book.genres.map(g => g.name).join(', ') : '';
+            row.appendChild(genresCell);
+
+            bookInfo.appendChild(row);
+
+            // Устанавливаем ссылку для редактирования
+            document.getElementById('edit-link').href = `/books/${bookId}/edit`;
+        } catch (error) {
+            console.error("Ошибка при загрузке книги:", error);
+        }
 
         // Загрузка комментариев при открытии страницы
-        loadComments();
+        await loadComments();
 
         // Обработчик формы добавления комментария
-        $('#comment-form').on('submit', function (event) {
-            event.preventDefault(); // Отменяем стандартное поведение формы
+        document.getElementById('comment-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-            var commentText = $('#comment-text').val().trim();
+            const commentText = document.getElementById('comment-text').value.trim();
 
             if (!commentText) {
                 alert('Пожалуйста, введите текст комментария');
                 return;
             }
 
-            // Отправляем POST запрос
-            $.ajax({
-                url: "/api/books/" + bookId + "/comments",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({text: commentText}),
-                success: function (response) {
-                    // Очищаем поле ввода
-                    $('#comment-text').val('');
+            try {
+                const response = await fetch(`/api/flux/books/${bookId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: commentText })
+                });
 
-                    // Перезагружаем список комментариев
-                    loadComments();
-
-                    // Показываем сообщение об успехе
-                    alert('Комментарий успешно добавлен!');
-                },
-                error: function (error) {
-                    console.error("Ошибка при добавлении комментария:", error);
-                    alert('Ошибка при добавлении комментария: ' + error.responseText);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText);
                 }
-            });
+
+                // Очищаем поле ввода
+                document.getElementById('comment-text').value = '';
+
+                // Перезагружаем список комментариев
+                await loadComments();
+
+                // Показываем сообщение об успехе
+                alert('Комментарий успешно добавлен!');
+            } catch (error) {
+                console.error("Ошибка при добавлении комментария:", error);
+                alert('Ошибка при добавлении комментария: ' + error.message);
+            }
         });
     });
 </script>

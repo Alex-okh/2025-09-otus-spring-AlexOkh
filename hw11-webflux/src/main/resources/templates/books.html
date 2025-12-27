@@ -73,7 +73,11 @@
                     const editCell = document.createElement('td');
                     const deleteCell = document.createElement('td');
 
-                    titleCell.textContent = book.title;
+                    const titlelink = document.createElement('a');
+                    titlelink.textContent = book.title;
+                    titlelink.href = `/books/${book.id}`;
+                    titleCell.appendChild(titlelink);
+
                     authorCell.textContent = book.author.fullName;
                     genresCell.textContent = book.genres.map(g => g.name).join(', ');
 
