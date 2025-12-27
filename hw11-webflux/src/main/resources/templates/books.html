@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница книг</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Просмотр библиотеки', 'Полный список книг')}"></div>
+
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Жанры</th>
+            <th></th> <!-- Для кнопки редактирования -->
+            <th></th> <!-- Для кнопки удаления -->
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <a class="btn-add" th:href="@{/books/create}">Новая книга</a>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+<script>
+    // Функция для удаления книги
+    function deleteBook(bookId, bookTitle) {
+        return new Promise((resolve, reject) => {
+            // Подтверждение удаления
+            if (!confirm(`Вы уверены, что хотите удалить книгу "${bookTitle}"?`)) {
+                reject('Отменено пользователем');
+                return;
+            }
+
+            fetch(`/api/flux/books/${bookId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при удалении книги');
+                    }
+                    resolve();
+                })
+                .catch(error => {
+                    reject(error.message);
+                });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/flux/books')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке книг')
+                }
+                return response.json();
+            })
+            .then(books => {
+                const tbody = document.querySelector('tbody');
+                books.forEach(book => {
+                    const row = document.createElement('tr');
+                    // Устанавливаем id строки для возможности удаления
+                    row.id = `book-row-${book.id}`;
+
+                    const titleCell = document.createElement('td');
+                    const authorCell = document.createElement('td');
+                    const genresCell = document.createElement('td');
+                    const editCell = document.createElement('td');
+                    const deleteCell = document.createElement('td');
+
+                    titleCell.textContent = book.title;
+                    authorCell.textContent = book.author.fullName;
+                    genresCell.textContent = book.genres.map(g => g.name).join(', ');
+
+                    // Создаем ссылку для редактирования
+                    const editLink = document.createElement('a');
+                    editLink.href = `/books/${book.id}/edit`;
+                    editLink.textContent = 'Редактировать';
+                    editCell.appendChild(editLink);
+
+                    // Создаем кнопку для удаления
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-sm btn-danger delete-book-btn';
+                    deleteBtn.dataset.bookId = book.id;
+                    deleteBtn.dataset.bookTitle = book.title;
+                    deleteBtn.textContent = 'Удалить';
+                    deleteCell.appendChild(deleteBtn);
+
+                    row.appendChild(titleCell);
+                    row.appendChild(authorCell);
+                    row.appendChild(genresCell);
+                    row.appendChild(editCell);
+                    row.appendChild(deleteCell);
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                // Можно добавить отображение ошибки на странице
+                const tbody = document.querySelector('tbody');
+                const row = document.createElement('tr');
+                const errorCell = document.createElement('td');
+                errorCell.colSpan = 5;
+                errorCell.textContent = 'Не удалось загрузить список книг. Ошибка: ' + error.message;
+                errorCell.style.color = 'red';
+                row.appendChild(errorCell);
+                tbody.appendChild(row);
+            });
+    });
+
+    // Обработчик для кнопок удаления
+    document.addEventListener('click', function(event) {
+        if (!event.target.classList.contains('delete-book-btn')) return;
+
+        const btn = event.target;
+        const bookId = btn.dataset.bookId;
+        const bookTitle = btn.dataset.bookTitle;
+
+        // Сохраняем оригинальный текст
+        const originalText = btn.textContent;
+
+        // Блокируем кнопку
+        btn.disabled = true;
+        btn.textContent = 'Удаление...';
+
+        // Вызываем функцию удаления
+        deleteBook(bookId, bookTitle)
+            .then(() => {
+                const row = document.getElementById(`book-row-${bookId}`);
+                if (row) {
+                    // Простая анимация исчезновения
+                    row.style.opacity = '0';
+                    row.style.transition = 'opacity 1s';
+
+                    setTimeout(() => {
+                        row.remove();
+                    }, 1000);
+                }
+            })
+            .catch(error => {
+                // Восстанавливаем кнопку только если не отменено пользователем
+                if (error !== 'Отменено пользователем') {
+                    alert('Ошибка удаления: ' + error);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            });
+    });
+</script>
+
+</body>
+</html>
