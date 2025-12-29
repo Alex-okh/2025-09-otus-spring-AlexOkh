@@ -1,10 +1,12 @@
 package ru.otus.hw.hw11webflux.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +25,7 @@ public class CommentController {
     }
 
     @PostMapping("api/flux/books/{bookId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<CommentDto> saveComment(@PathVariable String bookId, @RequestBody NewCommentDto commentDto) {
         var comment = new CommentDto(null, commentDto.text(), bookId);
         return commentService.saveComment(comment);

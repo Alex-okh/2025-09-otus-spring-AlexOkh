@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,7 +32,6 @@ public class DataInitializer {
     private final BookRepository bookRepository;
 
     private final CommentRepository commentRepository;
-
 
     @EventListener(ApplicationReadyEvent.class)
     public Mono<Void> initializeData() {
@@ -177,14 +175,12 @@ public class DataInitializer {
         // Этот метод должен быть вызван после создания книг
         return bookRepository.findAll()
                              .collectList()
-                             .flatMapMany(books -> {
-                                 // Создаем комментарии для каждой книги
-                                 return Flux.fromIterable(books)
+                             .flatMapMany(books -> Flux.fromIterable(books)
                                             .flatMap(book -> {
                                                 List<Comment> comments = createCommentsForBook(book);
                                                 return commentRepository.saveAll(comments);
-                                            });
-                             })
+                                            })
+                             )
                              .collectList()
                              .doOnNext(comments -> log.info("Created {} comments", comments.size()))
                              .then();

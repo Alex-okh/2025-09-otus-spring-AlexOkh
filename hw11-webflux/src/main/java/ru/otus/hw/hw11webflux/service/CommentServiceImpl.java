@@ -37,8 +37,4 @@ public class CommentServiceImpl implements CommentService {
                              .map(commentMapper::toDto);
     }
 
-    @Override
-    public void deleteComment(CommentDto commentDto) {
-
-    }
 }

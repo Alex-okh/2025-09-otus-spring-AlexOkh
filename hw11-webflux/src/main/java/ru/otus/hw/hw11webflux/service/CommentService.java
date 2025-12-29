@@ -10,6 +10,4 @@ public interface CommentService {
 
     Mono<CommentDto> saveComment(CommentDto commentDto);
 
-    void deleteComment(CommentDto commentDto);
-
 }

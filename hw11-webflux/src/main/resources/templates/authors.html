@@ -23,7 +23,7 @@
 </div>
 <div th:replace="~{fragments :: footer}"></div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Используем fetch для получения данных из реактивного контроллера
         fetch('/api/flux/authors')
             .then(response => {

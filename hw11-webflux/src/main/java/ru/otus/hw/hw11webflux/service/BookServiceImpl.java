@@ -77,7 +77,8 @@ public class BookServiceImpl implements BookService {
         var genres = Flux.fromIterable(bookDto.genres())
                          .flatMap(genreRepository::findById)
                          .collect(Collectors.toSet())
-                         .flatMap(g -> {if (g.isEmpty() || g.size() != bookDto.genres()
+                         .flatMap(g -> {
+                             if (g.isEmpty() || g.size() != bookDto.genres()
                                                                    .size()) {
                                  return Mono.error(new EntityNotFoundException("One or more genres Id not found"));
                              }

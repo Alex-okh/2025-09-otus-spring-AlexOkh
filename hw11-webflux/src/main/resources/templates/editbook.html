@@ -22,20 +22,20 @@
         <div class="row">
             <label for="book-title-input">Название:</label>
             <input id="book-title-input" name="title" required type="text" value=""/>
-            <div id="title-error" class="error-message"></div>
+            <div class="error-message" id="title-error"></div>
         </div>
         <div class="row">
             <label for="author-select">Автор:</label>
             <select id="author-select" name="authorId" required>
                 <option value="">-- Выберите автора --</option>
             </select>
-            <div id="author-error" class="error-message"></div>
+            <div class="error-message" id="author-error"></div>
         </div>
         <div class="row">
             <label for="genres-select">Жанры (удерживайте Ctrl для выбора нескольких):</label>
             <select id="genres-select" multiple name="genreIds" required size="10">
             </select>
-            <div id="genres-error" class="error-message"></div>
+            <div class="error-message" id="genres-error"></div>
         </div>
 
         <div class="row form-buttons">
@@ -107,7 +107,7 @@
                     book = await bookResponse.json();
                 }
 
-                return { authors, genres, book };
+                return {authors, genres, book};
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
                 loading.innerHTML = `<div class="errors">Ошибка при загрузке данных.
@@ -236,7 +236,7 @@
                     try {
                         errorData = await response.json();
                     } catch {
-                        errorData = { message: 'Ошибка сервера' };
+                        errorData = {message: 'Ошибка сервера'};
                     }
 
                     // Обработка ошибок валидации
