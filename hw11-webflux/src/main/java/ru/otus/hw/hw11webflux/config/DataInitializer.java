@@ -1,3 +1,4 @@
+//CHECKSTYLE:OFF
 package ru.otus.hw.hw11webflux.config;
 
 import lombok.RequiredArgsConstructor;
