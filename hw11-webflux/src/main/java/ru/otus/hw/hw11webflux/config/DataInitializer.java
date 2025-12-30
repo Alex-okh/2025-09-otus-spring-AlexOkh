@@ -176,11 +176,10 @@ public class DataInitializer {
         return bookRepository.findAll()
                              .collectList()
                              .flatMapMany(books -> Flux.fromIterable(books)
-                                            .flatMap(book -> {
-                                                List<Comment> comments = createCommentsForBook(book);
-                                                return commentRepository.saveAll(comments);
-                                            })
-                             )
+                                                       .flatMap(book -> {
+                                                           List<Comment> comments = createCommentsForBook(book);
+                                                           return commentRepository.saveAll(comments);
+                                                       }))
                              .collectList()
                              .doOnNext(comments -> log.info("Created {} comments", comments.size()))
                              .then();
