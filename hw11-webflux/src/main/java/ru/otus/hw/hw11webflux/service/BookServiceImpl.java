@@ -46,14 +46,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public Mono<BookDto> addBook(NewBookDto bookDto) {
         var genreIds = bookDto.genres();
-        if (genreIds == null || genreIds.isEmpty()) {
-            return Mono.error(new EntityNotFoundException("Genres cannot be empty"));
-        }
         var author = authorRepository.findById(bookDto.authorId())
                                      .switchIfEmpty(Mono.error(new EntityNotFoundException(
                                              "Author with Id %s not found".formatted(bookDto.authorId()))));
-        var genres = Flux.fromIterable(genreIds)
-                         .flatMap(genreRepository::findById)
+        var genres = Mono.just(genreIds)
+                         .flatMapMany(genreRepository::findAllById)
                          .collect(Collectors.toSet())
                          .flatMap(g -> {
                              if (g == null || g.isEmpty() || g.size() != genreIds.size()) {
@@ -74,8 +71,8 @@ public class BookServiceImpl implements BookService {
         var author = authorRepository.findById(bookDto.authorId())
                                      .switchIfEmpty(Mono.error(new EntityNotFoundException(
                                              "Author with Id %s not found".formatted(bookDto.authorId()))));
-        var genres = Flux.fromIterable(bookDto.genres())
-                         .flatMap(genreRepository::findById)
+        var genres = Mono.just(bookDto.genres())
+                         .flatMapMany(genreRepository::findAllById)
                          .collect(Collectors.toSet())
                          .flatMap(g -> {
                              if (g.isEmpty() || g.size() != bookDto.genres().size()) {

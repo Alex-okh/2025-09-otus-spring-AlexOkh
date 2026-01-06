@@ -36,9 +36,7 @@ public class DataInitializer {
     @EventListener(ApplicationReadyEvent.class)
     public Mono<Void> initializeData() {
         log.info("Starting data initialization...");
-        return cleanCollections().then(createAuthors())
-                                 .then(createGenres())
-                                 .then(createBooks())
+        return cleanCollections().then(createBooks())
                                  .then(createComments())
                                  .doOnSuccess(v -> log.info("Data initialization completed successfully"))
                                  .doOnError(e -> log.error("Error during data initialization: {}", e.getMessage()));
