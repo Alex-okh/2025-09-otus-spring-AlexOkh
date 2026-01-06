@@ -82,7 +82,7 @@
                 </dependencies>
                 <configuration>
                     <configLocation>${checkstyle.config.url}</configLocation>
-<!--                    <excludes>**/config/DataInitializer.java</excludes>-->
+                    <excludes>**/config/DataInitializer.java</excludes>
                 </configuration>
                 <executions>
                     <execution>
