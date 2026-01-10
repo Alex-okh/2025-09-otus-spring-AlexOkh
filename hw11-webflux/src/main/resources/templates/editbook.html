@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование книги</title>
+    <link href="/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments :: page-header('Редактирование книги', '')}"></div>
+
+<div class="container">
+    <div class="loading" id="loading">
+        <i class="bi bi-hourglass"></i> Загрузка данных...
+    </div>
+
+    <form id="book-edit-form" style="display: none;">
+        <div class="row">
+            <input id="id-input" name="id" type="hidden" value=""/>
+        </div>
+        <div class="row">
+            <label for="book-title-input">Название:</label>
+            <input id="book-title-input" name="title" required type="text" value=""/>
+            <div class="error-message" id="title-error"></div>
+        </div>
+        <div class="row">
+            <label for="author-select">Автор:</label>
+            <select id="author-select" name="authorId" required>
+                <option value="">-- Выберите автора --</option>
+            </select>
+            <div class="error-message" id="author-error"></div>
+        </div>
+        <div class="row">
+            <label for="genres-select">Жанры (удерживайте Ctrl для выбора нескольких):</label>
+            <select id="genres-select" multiple name="genreIds" required size="10">
+            </select>
+            <div class="error-message" id="genres-error"></div>
+        </div>
+
+        <div class="row form-buttons">
+            <button class="btn btn-success" type="submit">
+                <i class="bi bi-save"></i> Сохранить
+            </button>
+            <a class="btn btn-outline-secondary" href="/books">
+                <i class="bi bi-x-circle"></i> Отменить
+            </a>
+        </div>
+    </form>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Получаем ID книги из URL
+        const pathSegments = window.location.pathname.split('/').filter(segment => segment !== '');
+        let bookId = null;
+        let isEditMode = false;
+
+        // Определяем режим по URL
+        if (pathSegments.length >= 3 && pathSegments[pathSegments.length - 1] === 'edit') {
+            // Формат: /books/1/edit
+            bookId = pathSegments[pathSegments.length - 2];
+            isEditMode = true;
+        } else if (pathSegments.length === 2 && pathSegments[1] === 'create') {
+            // Формат: /books/create
+            isEditMode = false;
+        }
+
+        console.log('Book ID:', bookId, 'Is edit mode:', isEditMode);
+
+        // Обновляем заголовок страницы
+        if (isEditMode) {
+            document.title = 'Редактирование книги';
+            const header = document.querySelector('.header h1');
+            if (header) header.textContent = 'Редактирование книги';
+        } else {
+            document.title = 'Создание книги';
+            const header = document.querySelector('.header h1');
+            if (header) header.textContent = 'Создание книги';
+        }
+
+        const form = document.getElementById('book-edit-form');
+        const loading = document.getElementById('loading');
+        const titleInput = document.getElementById('book-title-input');
+        const authorSelect = document.getElementById('author-select');
+        const genresSelect = document.getElementById('genres-select');
+
+        // Функция для загрузки данных
+        async function loadData() {
+            try {
+                // Загружаем авторов
+                const authorsResponse = await fetch('/api/flux/authors');
+                if (!authorsResponse.ok) throw new Error('Ошибка при загрузке авторов');
+                const authors = await authorsResponse.json();
+
+                // Загружаем жанры
+                const genresResponse = await fetch('/api/flux/genres');
+                if (!genresResponse.ok) throw new Error('Ошибка при загрузке жанров');
+                const genres = await genresResponse.json();
+
+                let book = null;
+                if (isEditMode && bookId) {
+                    // Загружаем книгу для редактирования
+                    const bookResponse = await fetch(`/api/flux/books/${bookId}`);
+                    if (!bookResponse.ok) throw new Error('Ошибка при загрузке книги');
+                    book = await bookResponse.json();
+                }
+
+                return {authors, genres, book};
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                loading.innerHTML = `<div class="errors">Ошибка при загрузке данных.
+                    <a href="javascript:location.reload()">Обновить страницу</a></div>`;
+                throw error;
+            }
+        }
+
+        // Функция инициализации формы
+        function initForm(data) {
+            console.log('Data:', data);
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            // Заполняем список авторов
+            authorSelect.innerHTML = '<option value="">-- Выберите автора --</option>';
+            if (data.authors && Array.isArray(data.authors)) {
+                data.authors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.id;
+                    option.textContent = author.fullName;
+                    authorSelect.appendChild(option);
+                });
+            }
+
+            // Заполняем список жанров
+            genresSelect.innerHTML = '';
+            if (data.genres && Array.isArray(data.genres)) {
+                data.genres.forEach(genre => {
+                    const option = document.createElement('option');
+                    option.value = genre.id;
+                    option.textContent = genre.name;
+                    genresSelect.appendChild(option);
+                });
+            }
+
+            // Заполняем данные книги (если есть)
+            if (data.book && data.book.id) {
+                document.getElementById('id-input').value = data.book.id;
+                titleInput.value = data.book.title || '';
+
+                // Устанавливаем выбранного автора
+                if (data.book.author && data.book.author.id) {
+                    authorSelect.value = data.book.author.id;
+                }
+
+                // Устанавливаем выбранные жанры
+                if (data.book.genres && Array.isArray(data.book.genres)) {
+                    const genreIds = data.book.genres.map(genre => genre.id);
+                    Array.from(genresSelect.options).forEach(option => {
+                        option.selected = genreIds.includes(option.value);
+                    });
+                }
+            }
+
+            // Показываем форму, скрываем индикатор загрузки
+            loading.style.display = 'none';
+            form.style.display = 'block';
+
+            console.log('Form initialized successfully');
+        }
+
+        // Обработчик отправки формы
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            // Собираем данные формы
+            const title = titleInput.value.trim();
+            const authorId = authorSelect.value;
+            const selectedGenres = Array.from(genresSelect.selectedOptions).map(option => option.value);
+
+            // Проверка обязательных полей
+            let hasError = false;
+            if (!title) {
+                document.getElementById('title-error').textContent = 'Название не может быть пустым';
+                hasError = true;
+            }
+            if (!authorId) {
+                document.getElementById('author-error').textContent = 'Выберите автора';
+                hasError = true;
+            }
+            if (!selectedGenres || selectedGenres.length === 0) {
+                document.getElementById('genres-error').textContent = 'Выберите хотя бы один жанр';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Подготовка данных для отправки согласно NewBookDto
+            const formData = {
+                title: title,
+                authorId: authorId,
+                genres: selectedGenres // Изменено с genreIds на genres
+            };
+
+            console.log('Sending data:', JSON.stringify(formData));
+
+            try {
+                let response;
+                if (isEditMode && bookId) {
+                    // Режим редактирования
+                    response = await fetch(`/api/flux/books/${bookId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Режим создания
+                    response = await fetch('/api/flux/books', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch {
+                        errorData = {message: 'Ошибка сервера'};
+                    }
+
+                    // Обработка ошибок валидации
+                    if (response.status === 400 && errorData) {
+                        if (errorData.title) document.getElementById('title-error').textContent = errorData.title;
+                        if (errorData.authorId) document.getElementById('author-error').textContent = errorData.authorId;
+                        if (errorData.genres) document.getElementById('genres-error').textContent = errorData.genres;
+                        if (errorData.message && !errorData.title && !errorData.authorId && !errorData.genres) {
+                            document.getElementById('title-error').textContent = errorData.message;
+                        }
+                    } else {
+                        document.getElementById('title-error').textContent = 'Ошибка сервера: ' + response.status;
+                    }
+                    return;
+                }
+
+                const result = await response.json();
+
+                // Редирект на страницу книги или список книг
+                if (result && result.id) {
+                    window.location.href = `/books/${result.id}`;
+                } else if (isEditMode && bookId) {
+                    window.location.href = `/books/${bookId}`;
+                } else {
+                    window.location.href = '/books';
+                }
+            } catch (error) {
+                console.error('Error saving book:', error);
+                document.getElementById('title-error').textContent = 'Ошибка сети или сервера';
+            }
+        });
+
+        // Загружаем данные и инициализируем форму
+        try {
+            const data = await loadData();
+            initForm(data);
+        } catch (error) {
+            console.error('Failed to load data:', error);
+        }
+    });
+</script>
+</body>
+</html>

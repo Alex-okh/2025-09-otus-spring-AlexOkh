@@ -29,7 +29,7 @@ spring:
 logging:
   level:
     # Spring Framework
-    org.springframework.web: ERROR
-    org.springframework.web.filter.CommonsRequestLoggingFilter: ERROR
+    org.springframework.web: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
 

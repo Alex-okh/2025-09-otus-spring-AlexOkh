@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница жанров</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Управление жанрами', 'Полный список жанров')}"></div>
+
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Жанры:</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('api/flux/genres')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке жанров')
+                }
+                return response.json();
+            })
+            .then(genres => {
+                const tbody = document.querySelector('tbody');
+                genres.forEach(genre => {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.textContent = genre.name;
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+    });
+</script>
+</body>
+</html>
