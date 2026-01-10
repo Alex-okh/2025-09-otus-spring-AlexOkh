@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
                          .flatMapMany(genreRepository::findAllById)
                          .collect(Collectors.toSet())
                          .flatMap(g -> {
-                             if (g == null || g.isEmpty() || g.size() != genreIds.size()) {
+                             if (g.size() != genreIds.size()) {
                                  return Mono.error(new EntityNotFoundException("One or more genres Id not found"));
                              }
                              return Mono.just(g);
@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
                          .flatMapMany(genreRepository::findAllById)
                          .collect(Collectors.toSet())
                          .flatMap(g -> {
-                             if (g.isEmpty() || g.size() != bookDto.genres().size()) {
+                             if (g.size() != bookDto.genres().size()) {
                                  return Mono.error(new EntityNotFoundException("One or more genres Id not found"));
                              }
                              return Mono.just(g);
