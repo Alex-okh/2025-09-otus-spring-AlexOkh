@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Информация о книге</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Подробная информация о книге', '')}"></div>
+
+<div class="container">
+    <th:block th:if="${book != null}">
+        <table>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Жанры</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${book.title()}"></td>
+                <td th:text="${book.authorName()}"></td>
+                <td th:text="${book.genres()}"></td>
+            </tr>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+                <th>Комментарии:</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.text()}"></td>
+            </tr>
+            <tr>
+                <td>
+                    <form th:action="@{/book/comment}" method="post">
+                        <input type="hidden" name="bookId" th:value="${book.id}">
+                        <input type="text" name="text" placeholder="Ваш комментарий" required>
+                        <button type="submit" class="btn-edit">Добавить комментарий</button>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
+        <td>
+            <form th:action="@{/books/{id}(id=${book.id})}" method="post" class="delete-form"
+                  onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?');">
+                <input type="hidden" name="_method" value="DELETE"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </th:block>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
