@@ -667,3 +667,70 @@ td .delete-form button:hover {
         transform: translateY(0);
     }
 }
+
+/* =================== */
+/* Исправления для страницы login */
+/* =================== */
+
+/* Стили для кнопки Login на странице входа */
+.login-container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+}
+
+.login-container button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+}
+
+.login-container button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Убираем стандартные стили для поля пароля в login */
+.login-container input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.login-container input[type="password"]:focus {
+    border-color: #4f46e5;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    outline: none;
+}
+
+/* Убедимся, что поле логина выглядит так же */
+.login-container input[type="text"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.login-container input[type="text"]:focus {
+    border-color: #4f46e5;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    outline: none;
+}

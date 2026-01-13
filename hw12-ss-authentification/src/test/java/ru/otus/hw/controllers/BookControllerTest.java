@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,7 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @DisplayName("Контроллер книг должен:")
-@WebMvcTest({BookController.class, BookMapper.class, AuthorMapper.class, GenreMapper.class, CommentMapper.class})
+@WebMvcTest(value = {BookController.class, BookMapper.class, AuthorMapper.class, GenreMapper.class,
+                     CommentMapper.class},
+            excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class BookControllerTest {
     private List<Book> dbBooks;
 
@@ -159,7 +162,8 @@ class BookControllerTest {
                                                    .toList();
 
         when(bookService.findById(expectedBook.getId())).thenReturn(bookMapper.bookToDto(expectedBook));
-        when(commentsService.findAllByBookId(expectedBook.getId())).thenReturn(commentMapper.commentToDto(expectedComments));
+        when(commentsService.findAllByBookId(expectedBook.getId())).thenReturn(
+                commentMapper.commentToDto(expectedComments));
 
         this.mvc.perform(get("/book/" + expectedBook.getId()))
                 .andExpect(status().isOk())
@@ -182,7 +186,7 @@ class BookControllerTest {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = new BookDto(0L, paramTitle, null, 1L, null, Set.of(1L,2L));
+        var expectedBookDto = new BookDto(0L, paramTitle, null, 1L, null, Set.of(1L, 2L));
 
         when(bookService.create(any())).thenReturn(expectedBookDto);
 
@@ -204,7 +208,7 @@ class BookControllerTest {
         Long paramId = 1L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = new BookDto(1L, paramTitle, null, 1L, null, Set.of(1L,2L));
+        var expectedBookDto = new BookDto(1L, paramTitle, null, 1L, null, Set.of(1L, 2L));
 
         when(bookService.update(any())).thenReturn(expectedBookDto);
 
