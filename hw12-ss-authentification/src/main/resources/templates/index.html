@@ -3,22 +3,12 @@
 <head>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" href="/style.css">
-    <title>Добро пожаловать | ДЗ №09 | Otus Spring</title>
+    <title>Добро пожаловать | ДЗ №12 | Otus Spring</title>
 </head>
 
 <body>
 
-<div>
-    <header class="header">
-        <h1>Библиотека книг</h1>
-        <nav>
-            <a href="/">Главная</a> |
-            <a href="/books">Книги</a> |
-            <a href="/authors">Авторы</a> |
-            <a href="/genres">Жанры</a>
-        </nav>
-    </header>
-</div>
+<div th:replace="~{fragments :: page-header('Библиотека книг', '')}"></div>
 
 <div class="container">
     <h3>Все книги</h3>
@@ -32,11 +22,7 @@
     <p>Просмотр и управление жанрами</p>
     <a href="/genres">Перейти на страницу с жанрами</a>
 </div>
-<div>
-    <footer class="footer">
-        <p>© 2025 Охрименко Алексей. Библиотека книг</p>
-    </footer>
-</div>
+<div th:replace="~{fragments :: footer}"></div>
 </body>
 </html>
 

@@ -21,12 +21,10 @@
             <tbody>
             <tr th:each="genre : ${genres}">
                 <td th:text="${genre.name}"></td>
-                <td><a th:href="@{/genres/{id}/edit(id=${genre.id})}">Редактировать</a></td>
-                <td><a th:href="@{/genres/{id}(id=${genre.id})}" method="delete">Удалить</a></td>
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/genres/create}" class="btn-add">Добавить</a>
+
     </th:block>
 </div>
 <div th:replace="~{fragments :: footer}"></div>

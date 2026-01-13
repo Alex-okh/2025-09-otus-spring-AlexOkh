@@ -11,11 +11,20 @@
 <!-- Хэдер -->
 <div th:fragment="page-header(title, subtitle)">
     <header class="header">
-        <div class="nav-bar">
-            <a href="/">Главная</a> |
-            <a href="/books">Книги</a> |
-            <a href="/authors">Авторы</a> |
-            <a href="/genres">Жанры</a>
+        <div class="nav-bar" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="nav-left">
+                <a href="/">Главная</a> |
+                <a href="/books">Книги</a> |
+                <a href="/authors">Авторы</a> |
+                <a href="/genres">Жанры</a>
+            </div>
+            <div class="nav-right" th:if="${currentuser != null}">
+                <span th:text="${currentuser}">Анонимус</span>
+                <a href="/logout" style="margin-left: 10px;">Выход</a>
+            </div>
+            <div class="nav-right" th:unless="${currentuser != null}">
+                <a href="/login">Войти</a>
+            </div>
         </div>
         <h1 th:text="${title}">Заголовок</h1>
         <p th:if="${subtitle != null}" th:text="${subtitle}">Подзаголовок</p>

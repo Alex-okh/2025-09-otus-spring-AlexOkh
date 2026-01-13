@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS public;
+
 create table authors
 (
     id        bigserial,

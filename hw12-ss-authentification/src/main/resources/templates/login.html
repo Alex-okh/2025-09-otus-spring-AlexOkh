@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Вход в систему</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: page-header('Нужно войти в систему', '')}"></div>
+<div class="login-container">
+    <h2>Пожалуйста введите имя пользователя и пароль</h2>
+
+    <!-- Сообщение об ошибке -->
+    <div th:if="${param.error}" class="error">
+        <p th:text="${errorMessage}"> Неверные имя пользователя или пароль </p>
+    </div>
+
+    <!-- Сообщение об успешном выходе -->
+    <div th:if="${param.logout}" class="logout">
+        Вы успешно вышли из системы
+    </div>
+
+    <!-- Форма логина -->
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label for="username">Имя:</label>
+            <input type="text" id="username" name="username" required autofocus />
+        </div>
+
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+
+        <div>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
