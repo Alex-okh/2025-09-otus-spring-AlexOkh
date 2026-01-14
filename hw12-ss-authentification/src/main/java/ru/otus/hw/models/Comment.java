@@ -26,11 +26,14 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "text", nullable = false, unique = false)
+    @Column(name = "text",
+            nullable = false,
+            unique = false)
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id",
+                nullable = false)
     private Book book;
 
     @Override

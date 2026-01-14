@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Информация о книге</title>
-    <link rel="stylesheet" href="/style.css">
+    <link href="/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -42,10 +42,10 @@
             </tr>
             <tr>
                 <td>
-                    <form th:action="@{/book/comment}" method="post">
-                        <input type="hidden" name="bookId" th:value="${book.id}">
-                        <input type="text" name="text" placeholder="Ваш комментарий" required>
-                        <button type="submit" class="btn-edit">Добавить комментарий</button>
+                    <form method="post" th:action="@{/book/comment}">
+                        <input name="bookId" th:value="${book.id}" type="hidden">
+                        <input name="text" placeholder="Ваш комментарий" required type="text">
+                        <button class="btn-edit" type="submit">Добавить комментарий</button>
                     </form>
                 </td>
             </tr>
@@ -54,9 +54,9 @@
         </table>
         <a th:href="@{/books/{id}/edit(id=${book.id})}">Редактировать</a>
         <td>
-            <form th:action="@{/books/{id}(id=${book.id})}" method="post" class="delete-form"
-                  onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?');">
-                <input type="hidden" name="_method" value="DELETE"/>
+            <form class="delete-form" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?');"
+                  th:action="@{/books/{id}(id=${book.id})}">
+                <input name="_method" type="hidden" value="DELETE"/>
                 <button type="submit">Удалить</button>
             </form>
         </td>

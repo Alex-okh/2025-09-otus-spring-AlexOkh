@@ -22,6 +22,8 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "full_name", unique = false, nullable = false)
+    @Column(name = "full_name",
+            unique = false,
+            nullable = false)
     private String fullName;
 }

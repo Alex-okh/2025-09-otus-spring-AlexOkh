@@ -22,18 +22,23 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username",
+            unique = true,
+            nullable = false)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password",
+            nullable = false)
     private String password;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "role",
+            nullable = false)
     private String role;
 
-    @Column(name = "isactive", nullable = false)
+    @Column(name = "isactive",
+            nullable = false)
     private boolean isactive;
 }

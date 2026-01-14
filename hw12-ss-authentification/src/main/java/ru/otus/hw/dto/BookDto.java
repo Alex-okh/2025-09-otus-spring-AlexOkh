@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
-public record BookDto(@Min(value = 0, message = "Book id can not be negative") long id,
+public record BookDto(@Min(value = 0,
+                           message = "Book id can not be negative") long id,
 
                       @NotBlank(message = "Название книги не может быть пустым") String title,
 
