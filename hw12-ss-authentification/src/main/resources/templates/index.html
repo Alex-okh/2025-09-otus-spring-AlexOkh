@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link href="/style.css" rel="stylesheet">
+    <title>Добро пожаловать | ДЗ №12 | Otus Spring</title>
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Библиотека книг', '')}"></div>
+
+<div class="container">
+    <p>для целей тестирования используйте пользователей:</p>
+    <p>user : 123 (права для просмотра и комментариев)</p>
+    <p>editor : 321 (+права для измениения и удаления)</p>
+
+
+    <h3>Все книги</h3>
+    <p>Просмотр и управление книгами</p>
+    <a href="/books">Перейти на страницу с книгами</a>
+
+    <h3>Все авторы</h3>
+    <p>Просмотр и управление авторами</p>
+    <a href="/authors">Перейти на страницу с авторами</a>
+    <h3>Все жанры</h3>
+    <p>Просмотр и управление жанрами</p>
+    <a href="/genres">Перейти на страницу с жанрами</a>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
+
+
