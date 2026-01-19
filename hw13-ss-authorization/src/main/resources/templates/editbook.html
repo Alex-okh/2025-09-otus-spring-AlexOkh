@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Информация о книге</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Редактирование книги', '')}"></div>
+
+<div class="container">
+    <th:block th:if="${book != null}">
+        <form action="editbook.html" id="book-edit-form" th:action="@{/book}" th:method="post"
+              th:object="${book}">
+            <input name="_method" th:value="${book.id != 0} ? 'PUT' : 'POST'"
+                   type="hidden"/>
+            <div class="row">
+                <input hidden="true" id="id-input" name="id" th:value="*{id}" type="text" value="1"/>
+            </div>
+            <div class="row">
+                <label for="book-title-input">Название:</label>
+                <input id="book-title-input" name="title" th:value="*{title}" type="text" value="1"/>
+                <div class="errors" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">Wrong title</div>
+            </div>
+            <div class="row">
+                <label for="author-select"> Автор:</label>
+                <select id="author-select" th:field="*{authorId}">
+                    <option value="">-- Выберите автора --</option>
+                    <option th:each="authorDto : ${authors}"
+                            th:selected="${authorId != null and authorId == authorDto.id()}"
+                            th:text="${authorDto.fullName()}"
+                            th:value="${authorDto.id()}">
+                    </option>
+                </select>
+                <div class="errors" th:errors="*{authorId}" th:if="${#fields.hasErrors('authorId')}">Wrong author</div>
+
+            </div>
+            <div class="row">
+                <label for="genres-select"> Жанры:</label>
+                <select id="genres-select" multiple name="genreIds" size="10">
+                    <option th:each="genreDto : ${genres}"
+                            th:selected="${book.genreIds != null and book.genreIds().contains(genreDto.id())}"
+                            th:text="${genreDto.name()}"
+                            th:value="${genreDto.id()}">
+                    </option>
+                </select>
+                <div class="errors" th:errors="*{genreIds}" th:if="${#fields.hasErrors('genreIds')}">Wrong genres</div>
+            </div>
+
+            <div class="row">
+                <button class="btn btn-success" type="submit">
+                    <i class="bi bi-save"></i> Сохранить
+                </button>
+                <a class="btn btn-outline-secondary" th:href="@{/books}">
+                    <i class="bi bi-x-circle"></i> Отменить
+                </a>
+            </div>
+
+        </form>
+    </th:block>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
