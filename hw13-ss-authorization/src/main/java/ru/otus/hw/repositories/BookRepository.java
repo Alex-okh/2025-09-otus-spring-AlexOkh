@@ -14,4 +14,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @EntityGraph("book-authors")
     List<Book> findAll();
 
+
 }

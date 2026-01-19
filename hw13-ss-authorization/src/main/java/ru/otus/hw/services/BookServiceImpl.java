@@ -1,7 +1,7 @@
 package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Secured("ROLE_EDITOR")
+    @PreAuthorize("hasAuthority('EDITOR')")
     @Transactional
     public BookDto create(BookDto bookDto) {
         var author = getAuthor(bookDto.authorId());
@@ -57,7 +57,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_EDITOR') and #bookDto.creator() == authentication.name")
+    @PreAuthorize("hasAuthority('EDITOR')")
+    @PostAuthorize("returnObject.creator() == authentication.name")
     @Transactional
     public BookDto update(BookDto bookDto) {
         var author = getAuthor(bookDto.authorId());
@@ -72,7 +73,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_EDITOR') and #bookDto.creator() == authentication.name")
+    @PreAuthorize("hasAuthority('EDITOR')")
     @Transactional
     public void deleteById(long id) {
         bookRepository.deleteById(id);

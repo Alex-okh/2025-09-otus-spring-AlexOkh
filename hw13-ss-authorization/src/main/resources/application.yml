@@ -38,8 +38,6 @@ logging:
     # Spring Framework
     org.springframework.web: DEBUG
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.zaxxer.hikari: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.access: TRACE
 
