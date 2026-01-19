@@ -40,7 +40,7 @@ public class BookController {
 
     @GetMapping("/books/create")
     public String createBook(Model model) {
-        var book = new BookDto(0, "", "", 0L, "", Collections.emptySet());
+        var book = new BookDto(0, "", "", 0L, "", Collections.emptySet(), null);
         var authors = authorService.findAll();
         var genres = genreService.findAll();
         model.addAttribute("book", book);

@@ -17,5 +17,7 @@ public record BookDto(@Min(value = 0,
 
                       String genres,
 
-                      @NotEmpty(message = "Выберите хотя бы один жанр") Set<@NotNull Long> genreIds) {
+                      @NotEmpty(message = "Выберите хотя бы один жанр") Set<@NotNull Long> genreIds,
+
+                      String creator) {
 }

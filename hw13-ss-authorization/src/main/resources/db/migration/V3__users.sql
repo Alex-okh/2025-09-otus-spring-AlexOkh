@@ -12,4 +12,6 @@ create table users
 insert into users (username, password, name, role, isactive)
 VALUES ('user', '{bcrypt}$2a$10$XBH9W6HVfegEp2gNM0xB8.Sq2QwLlSppcL0wOJrMSjU2v41WHZD5i', 'Обычный пользователь', 'USER',
         true),
-       ('editor', '{bcrypt}$2a$10$btqldBu9leIKRMm.UFWSMuUUhZFqPGKcKDDVu.k2RK7SHPkVqnLOW', 'Редактор', 'EDITOR', true)
+       ('editor1', '{bcrypt}$2a$10$btqldBu9leIKRMm.UFWSMuUUhZFqPGKcKDDVu.k2RK7SHPkVqnLOW', 'Редактор1', 'EDITOR', true),
+       ('editor2', '{bcrypt}$2a$10$XBH9W6HVfegEp2gNM0xB8.Sq2QwLlSppcL0wOJrMSjU2v41WHZD5i', 'Редактор2', 'EDITOR',
+        true);

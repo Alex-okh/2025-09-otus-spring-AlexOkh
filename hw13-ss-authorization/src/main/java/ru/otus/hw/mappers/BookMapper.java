@@ -25,7 +25,8 @@ public class BookMapper {
 
         return new BookDto(book.getId(), book.getTitle(), book.getAuthor()
                                                               .getFullName(), book.getAuthor()
-                                                                                  .getId(), genres, genreIds);
+                                                                                  .getId(), genres, genreIds,
+                           book.getCreatedBy());
     }
 
     public List<BookDto> bookToDto(List<Book> books) {

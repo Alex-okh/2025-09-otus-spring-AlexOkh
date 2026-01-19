@@ -1,6 +1,9 @@
 package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.dto.BookDto;
@@ -43,15 +46,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Secured("ROLE_EDITOR")
     @Transactional
     public BookDto create(BookDto bookDto) {
         var author = getAuthor(bookDto.authorId());
         var genres = getGenres(bookDto.genreIds());
-        var book = new Book(0, bookDto.title(), author, genres);
+        var creator = getCurrentUserName();
+        var book = new Book(0, bookDto.title(), author, genres, creator);
         return bookMapper.bookToDto(bookRepository.save(book));
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_EDITOR') and #bookDto.creator() == authentication.name")
     @Transactional
     public BookDto update(BookDto bookDto) {
         var author = getAuthor(bookDto.authorId());
@@ -66,6 +72,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_EDITOR') and #bookDto.creator() == authentication.name")
     @Transactional
     public void deleteById(long id) {
         bookRepository.deleteById(id);
@@ -84,5 +91,9 @@ public class BookServiceImpl implements BookService {
                                .orElseThrow(() -> new EntityNotFoundException(
                                        "Author with id %d not found".formatted(authorId)));
 
+    }
+
+    private String getCurrentUserName () {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

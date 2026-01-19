@@ -50,6 +50,9 @@ public class Book {
                inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
     @Override
     public String toString() {
         return "Book{" + "id=" + id + "}";

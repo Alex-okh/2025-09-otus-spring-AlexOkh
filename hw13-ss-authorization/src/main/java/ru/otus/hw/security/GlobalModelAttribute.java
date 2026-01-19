@@ -20,4 +20,15 @@ public class GlobalModelAttribute {
         }
         return null;
     }
+
+    @ModelAttribute("currentusername")
+    public String currentUserNameHidden() {
+        Authentication authentication = SecurityContextHolder.getContext()
+                                                             .getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() &&
+            authentication.getPrincipal() instanceof CustomUser customUser) {
+            return customUser.getUsername();
+        }
+        return null;
+    }
 }
