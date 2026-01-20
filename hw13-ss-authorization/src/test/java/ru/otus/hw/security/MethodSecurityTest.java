@@ -27,13 +27,14 @@ import java.util.Optional;
 import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {BookServiceImpl.class, BookMapper.class, AuthorMapper.class, GenreMapper.class})
 @EnableMethodSecurity
 
 @DisplayName("При обращении к мутирующим методам")
-public class MethodSecurityTest {
+class MethodSecurityTest {
     private Author expectedAuthor;
     private List<Genre> expectedGenres;
     private BookDto expectedBookDto;
@@ -47,9 +48,6 @@ public class MethodSecurityTest {
 
     @MockitoBean
     private BookRepository bookRepository;
-
-    @MockitoBean
-    private BookMapper bookMapper;
 
     @Autowired
     private BookService bookService;
@@ -66,7 +64,7 @@ public class MethodSecurityTest {
     @Test
     @WithMockUser(authorities = "EDITOR")
     void createTest() {
-        when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
+        when(bookRepository.save(any())).thenReturn(expectedBook);
         when(authorRepository.findById(1L)).thenReturn(Optional.of(expectedAuthor));
         when(genreRepository.findAllById(Set.of(1L))).thenReturn(expectedGenres);
         assertDoesNotThrow(() -> bookService.create(expectedBookDto));
@@ -111,16 +109,31 @@ public class MethodSecurityTest {
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> bookService.deleteById(1L));
     }
 
-    @DisplayName("Редактировать книгу с ролью EDITOR")
+    @DisplayName("Редактировать книгу с ролью EDITOR для editor1")
     @Test
-    @WithMockUser(authorities = "EDITOR", username = "editor1")
+    @WithMockUser(authorities = "EDITOR",
+                  username = "editor1")
     void updateTest() {
         when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(expectedBook));
         when(authorRepository.findById(1L)).thenReturn(Optional.of(expectedAuthor));
         when(genreRepository.findAllById(Set.of(1L))).thenReturn(expectedGenres);
-        System.out.println(bookService.update(expectedBookDto));
+
         assertDoesNotThrow(() -> bookService.update(expectedBookDto));
+    }
+
+    @DisplayName("НЕ Редактировать книгу с ролью EDITOR для editor2")
+    @Test
+    @WithMockUser(authorities = "EDITOR",
+                  username = "editor2")
+    void update2Test() {
+        when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(expectedBook));
+        when(authorRepository.findById(1L)).thenReturn(Optional.of(expectedAuthor));
+        when(genreRepository.findAllById(Set.of(1L))).thenReturn(expectedGenres);
+
+        assertThrows(AuthorizationDeniedException.class, () -> bookService.update(expectedBookDto));
+
     }
 
     @DisplayName("Выбрасывать исключение с ролью USER")
