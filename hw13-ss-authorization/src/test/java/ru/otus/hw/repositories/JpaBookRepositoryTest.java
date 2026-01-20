@@ -70,7 +70,7 @@ class JpaBookRepositoryTest {
     @DisplayName("должен сохранять новую книгу")
     @Test
     void shouldSaveNewBook() {
-        var expectedBook = new Book(0, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
+        var expectedBook = new Book(0, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")), "editor1");
         var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
                                 .matches(book -> book.getId() > 0)
@@ -85,7 +85,7 @@ class JpaBookRepositoryTest {
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
-        var expectedBook = new Book(1, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")));
+        var expectedBook = new Book(1, "BookTitle_10500", new Author(3, "Author_3"), List.of(new Genre(1, "Genre_1")), "editor1");
 
         var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()

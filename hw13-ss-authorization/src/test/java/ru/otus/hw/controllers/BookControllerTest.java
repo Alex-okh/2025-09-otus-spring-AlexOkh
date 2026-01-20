@@ -186,7 +186,7 @@ class BookControllerTest {
         Long paramId = 0L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = new BookDto(0L, paramTitle, null, 1L, null, Set.of(1L, 2L));
+        var expectedBookDto = new BookDto(0L, paramTitle, null, 1L, null, Set.of(1L, 2L), null);
 
         when(bookService.create(any())).thenReturn(expectedBookDto);
 
@@ -208,7 +208,7 @@ class BookControllerTest {
         Long paramId = 1L;
         String paramTitle = "NEW BOOK";
         Integer paramAuthorId = 1;
-        var expectedBookDto = new BookDto(1L, paramTitle, null, 1L, null, Set.of(1L, 2L));
+        var expectedBookDto = new BookDto(1L, paramTitle, null, 1L, null, Set.of(1L, 2L), null);
 
         when(bookService.update(any())).thenReturn(expectedBookDto);
 
