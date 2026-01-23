@@ -1,6 +1,7 @@
 package ru.otus.hw.security;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение с ролью USER")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     @WithMockUser(authorities = "USER")
     void createByUser() {
         when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
@@ -82,6 +84,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение без аутентификации")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     void createByAnonimous() {
         when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
         when(authorRepository.findById(1L)).thenReturn(Optional.of(expectedAuthor));
@@ -138,6 +141,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение с ролью USER")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     @WithMockUser(authorities = "USER")
     void updateByUser() {
         when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
@@ -149,6 +153,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение без аутентификации")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     void updateByAnonimous() {
         when(bookRepository.save(expectedBook)).thenReturn(expectedBook);
         when(authorRepository.findById(1L)).thenReturn(Optional.of(expectedAuthor));

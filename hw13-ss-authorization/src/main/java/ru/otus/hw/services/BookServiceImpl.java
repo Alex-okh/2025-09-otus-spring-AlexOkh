@@ -46,7 +46,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('EDITOR')")
     @Transactional
     public BookDto create(BookDto bookDto) {
         var author = getAuthor(bookDto.authorId());
@@ -57,7 +56,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('EDITOR')")
     @PostAuthorize("returnObject.creator() == authentication.name")
     @Transactional
     public BookDto update(BookDto bookDto) {
