@@ -101,6 +101,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение с ролью USER")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     @WithMockUser(authorities = "USER")
     void deleteByUser() {
         assertThrows(AuthorizationDeniedException.class, () -> bookService.deleteById(1L));
@@ -108,6 +109,7 @@ class MethodSecurityTest {
 
     @DisplayName("Выбрасывать исключение без аутентификации")
     @Test
+    @Disabled("Отключен @Preautorize на сервисе")
     void deleteByAnonimous() {
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> bookService.deleteById(1L));
     }

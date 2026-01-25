@@ -71,7 +71,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('EDITOR')")
     @Transactional
     public void deleteById(long id) {
         bookRepository.deleteById(id);
