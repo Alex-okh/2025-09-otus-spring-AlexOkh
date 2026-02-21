@@ -24,6 +24,7 @@
         <module>hw11-webflux</module>
         <module>hw12-ss-authentification</module>
         <module>hw13-ss-authorization</module>
+        <module>hw15-integration</module>
 
     </modules>
 </project>
