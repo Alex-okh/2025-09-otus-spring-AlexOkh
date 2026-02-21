@@ -10,6 +10,7 @@ import ru.globus.hw15integration.service.IOService;
 import ru.globus.hw15integration.service.ImageProcessService;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Map;
 
 @Configuration
 @Slf4j
@@ -23,23 +24,11 @@ public class IntegrationConfig {
     @Bean
     public IntegrationFlow imagePipeline(ImageProcessService imageProcessService, IOService ioService) {
         return IntegrationFlow.from(processDirectoryChannel())
-                              .<String>handle((payload, headers) -> {
-                                  File directory = new File(payload);
-                                  if (!directory.exists() || !directory.isDirectory()) {
-                                      throw new IllegalArgumentException("Directory not found: " + payload);
-                                  }
-                                  File[] files = directory.listFiles(
-                                          (dir, name) -> name.matches(".*\\.(jpg|jpeg|png)$"));
-                                  if (files == null || files.length == 0) {
-                                      return null;
-                                  }
-                                  return files;
-                              })
+                              .<String>handle(this::validateAndListFiles)
                               .split()
                               .enrichHeaders(
-                                      h -> h.headerFunction("originalFilename", m -> ((File) m.getPayload()).getName()))
-                              .enrichHeaders(
-                                      h -> h.headerFunction("originalDir", m -> ((File) m.getPayload()).getParent()))
+                                      h -> h.headerFunction("originalFilename", m -> ((File) m.getPayload()).getName())
+                                            .headerFunction("originalDir", m -> ((File) m.getPayload()).getParent()))
                               .transform(File.class, ioService::readImage)
                               .handle(BufferedImage.class,
                                       (image, headers) -> imageProcessService.resizeImage(image, 800, 600))
@@ -53,4 +42,18 @@ public class IntegrationConfig {
                               })
                               .get();
     }
+
+    private File[] validateAndListFiles(String directoryPath, Map<String, Object> headers) {
+        File directory = new File(directoryPath);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new IllegalArgumentException("Directory not found: " + directoryPath);
+        }
+        File[] files = directory.listFiles((dir, name) -> name.matches(".*\\.(jpg|jpeg|png)$"));
+        if (files == null || files.length == 0) {
+            return null;
+        }
+        return files;
+    }
+
+
 }
