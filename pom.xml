@@ -25,6 +25,7 @@
         <module>hw12-ss-authentification</module>
         <module>hw13-ss-authorization</module>
         <module>hw15-integration</module>
+        <module>hw16-healthcheck</module>
 
     </modules>
 </project>

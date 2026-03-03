@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Футер -->
+<div th:fragment="footer">
+    <footer class="footer">
+        <p>© 2025 Охрименко Алексей. Библиотека книг</p>
+    </footer>
+</div>
+
+<!-- Хэдер -->
+<div th:fragment="page-header(title, subtitle)">
+    <header class="header">
+        <div class="nav-bar">
+            <a href="/">Главная</a> |
+            <a href="/books">Книги</a> |
+            <a href="/authors">Авторы</a> |
+            <a href="/genres">Жанры</a>
+        </div>
+        <h1 th:text="${title}">Заголовок</h1>
+        <p th:if="${subtitle != null}" th:text="${subtitle}">Подзаголовок</p>
+    </header>
+</div>
+</body>
+</html>

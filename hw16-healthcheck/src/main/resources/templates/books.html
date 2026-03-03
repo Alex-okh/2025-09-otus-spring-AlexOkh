@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Страница книг</title>
+    <link href="/style.css" rel="stylesheet">
+    <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div th:replace="~{fragments :: page-header('Просмотр библиотеки', 'Полный список книг')}"></div>
+
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Жанры</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <a class="btn-add" th:href="@{/books/create}">Новая книга</a>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+<script>
+    // Объявляем функции отдельно для лучшей читаемости
+    function loadBooks() {
+        $.get('/api/books')
+            .done(function (books) {
+                renderBooks(books);
+            })
+            .fail(function (error) {
+                console.error('Ошибка загрузки книг:', error);
+            });
+    }
+
+    function renderBooks(books) {
+        $('tbody').empty();
+        books.forEach(function (book) {
+            $('tbody').append(`
+                <tr id="book-row-${book.id}">
+                    <td><a href="/books/${book.id}">${book.title}</a></td>
+                    <td>${book.authorName}</td>
+                    <td>${book.genres}</td>
+                    <td><a href="/books/${book.id}/edit">Редактировать</a></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger delete-book-btn"
+                                data-book-id="${book.id}"
+                                data-book-title="${book.title}">
+                            Удалить
+                        </button>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    function deleteBook(bookId, bookTitle) {
+        return new Promise(function (resolve, reject) {
+            if (!confirm(`Удалить книгу "${bookTitle}"?`)) {
+                reject('Отменено пользователем');
+                return;
+            }
+
+            $.ajax({
+                url: `/api/books/${bookId}`,
+                type: 'DELETE',
+                success: function () {
+                    resolve();
+                },
+                error: function (xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    // Инициализация при загрузке страницы
+    $(document).ready(function () {
+        // Загружаем книги
+        loadBooks();
+
+        // Обработчик удаления
+        $(document).on('click', '.delete-book-btn', function () {
+            const $btn = $(this);
+            const bookId = $btn.data('book-id');
+            const bookTitle = $btn.data('book-title');
+
+            $btn.prop('disabled', true).text('Удаление...');
+
+            deleteBook(bookId, bookTitle)
+                .then(function () {
+                    $(`#book-row-${bookId}`).fadeOut(1000, function () {
+                        $(this).remove();
+                    });
+                })
+                .catch(function (error) {
+                    if (error !== 'Отменено пользователем') {
+                        alert('Ошибка удаления: ' + error);
+                    }
+                    $btn.prop('disabled', false).text('Удалить');
+                });
+        });
+    });
+</script>
+
+</body>
+</html>
