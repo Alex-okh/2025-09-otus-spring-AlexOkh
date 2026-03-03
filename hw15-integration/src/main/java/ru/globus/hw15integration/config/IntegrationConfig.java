@@ -25,7 +25,7 @@ public class IntegrationConfig {
     @Bean
     public IntegrationFlow imagePipeline(ImageProcessService imageProcessService, IOService ioService) {
         return IntegrationFlow.from(processDirectoryChannel()).handle(this::validateAndListFiles)
-                .route(File[].class, files -> files.length>0,
+                .route(File[].class, files -> files.length > 0,
                        mapping -> mapping
                          .subFlowMapping(true, sf -> sf
                               .split()

@@ -22,7 +22,9 @@ public class ProcessCommand {
            .writer()
            .println("Processing files in directory %s".formatted(directory));
         var processedFiles = processingGateway.process(directory);
-        if (processedFiles.isEmpty()) {return "No image files found.";}
+        if (processedFiles.isEmpty()) {
+            return "No image files found.";
+        }
         return "Completed. Processed %d files total.".formatted(processedFiles.size());
     }
 }
