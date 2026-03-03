@@ -8,12 +8,13 @@ import org.springframework.shell.command.CommandContext;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import ru.globus.hw15integration.gateway.ProcessingGateway;
 
 @RequiredArgsConstructor
 @ShellComponent
 @Slf4j
 public class ProcessCommand {
-    private final MessageChannel processDirectoryChannel;
+    private final ProcessingGateway processingGateway;
 
     @SuppressWarnings("unused")
     @ShellMethod(value = "Process files",
@@ -22,8 +23,7 @@ public class ProcessCommand {
         ctx.getTerminal()
            .writer()
            .println("Processing files in directory %s".formatted(directory));
-        processDirectoryChannel.send(MessageBuilder.withPayload(directory)
-                                                   .build());
+        processingGateway.process(directory);
         return "Completed";
     }
 }

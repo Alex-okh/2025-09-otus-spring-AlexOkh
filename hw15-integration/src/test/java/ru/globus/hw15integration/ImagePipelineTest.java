@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
+import ru.globus.hw15integration.gateway.ProcessingGateway;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,12 +21,8 @@ class ImagePipelineTest {
     @TempDir
     Path tempDir;
 
-    @Qualifier("processDirectoryChannel")
     @Autowired
-    private MessageChannel messageChannel;
-    @Qualifier("processDirectoryChannel")
-    @Autowired
-    private MessageChannel processDirectoryChannel;
+    private ProcessingGateway processingGateway;
 
     @Test
     @DisplayName("Должен создавать новый файл в ожидаемом каталоге с ожидаемым названием")
@@ -34,8 +31,7 @@ class ImagePipelineTest {
         File testImage = new File(inputDir, "test.png");
         createTestImage(testImage, 300, 400);
 
-        processDirectoryChannel.send(MessageBuilder.withPayload(inputDir.getAbsolutePath())
-                                                   .build());
+        processingGateway.process(inputDir.getAbsolutePath());
 
         File processedDir = new File(inputDir, "processed");
         assertThat(processedDir).exists()
@@ -52,8 +48,7 @@ class ImagePipelineTest {
         File testImage = new File(inputDir, "test.txt");
         createTestImage(testImage, 300, 400);
 
-        processDirectoryChannel.send(MessageBuilder.withPayload(inputDir.getAbsolutePath())
-                                                   .build());
+        processingGateway.process(inputDir.getAbsolutePath());
 
         File processedDir = new File(inputDir, "processed");
         assertThat(processedDir).doesNotExist();
