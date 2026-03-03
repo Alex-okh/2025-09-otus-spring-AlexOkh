@@ -18,13 +18,12 @@ public class ProcessCommand {
     @ShellMethod(value = "Process files",
                  key = "do")
     public String processFiles(@ShellOption() String directory, CommandContext ctx) {
-        ctx.getTerminal()
-           .writer()
-           .println("Processing files in directory %s".formatted(directory));
+        ctx.getTerminal().writer().println("Processing files in directory %s".formatted(directory));
         var processedFiles = processingGateway.process(directory);
         if (processedFiles.isEmpty()) {
             return "No image files found.";
+        } else {
+            return "Completed. Processed %d files total.".formatted(processedFiles.size());
         }
-        return "Completed. Processed %d files total.".formatted(processedFiles.size());
     }
 }
