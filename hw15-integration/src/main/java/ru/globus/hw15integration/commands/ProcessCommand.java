@@ -2,8 +2,6 @@ package ru.globus.hw15integration.commands;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.shell.command.CommandContext;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -23,7 +21,8 @@ public class ProcessCommand {
         ctx.getTerminal()
            .writer()
            .println("Processing files in directory %s".formatted(directory));
-        processingGateway.process(directory);
-        return "Completed";
+        var processedFiles = processingGateway.process(directory);
+        if (processedFiles.isEmpty()) {return "No image files found.";}
+        return "Completed. Processed %d files total.".formatted(processedFiles.size());
     }
 }

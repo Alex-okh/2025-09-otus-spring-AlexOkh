@@ -4,10 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.MessageBuilder;
 import ru.globus.hw15integration.gateway.ProcessingGateway;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -31,7 +28,7 @@ class ImagePipelineTest {
         File testImage = new File(inputDir, "test.png");
         createTestImage(testImage, 300, 400);
 
-        processingGateway.process(inputDir.getAbsolutePath());
+        var returnedProcessedFiles = processingGateway.process(inputDir.getAbsolutePath());
 
         File processedDir = new File(inputDir, "processed");
         assertThat(processedDir).exists()
@@ -39,6 +36,7 @@ class ImagePipelineTest {
         var processedFiles = processedDir.listFiles();
         assertThat(processedFiles).hasSize(1);
         assertThat(processedFiles[0].getName()).endsWith("processed.png");
+        assertThat(returnedProcessedFiles).size().isEqualTo(processedFiles.length);
     }
 
     @Test
@@ -48,10 +46,11 @@ class ImagePipelineTest {
         File testImage = new File(inputDir, "test.txt");
         createTestImage(testImage, 300, 400);
 
-        processingGateway.process(inputDir.getAbsolutePath());
+        var processedFiles = processingGateway.process(inputDir.getAbsolutePath());
 
         File processedDir = new File(inputDir, "processed");
         assertThat(processedDir).doesNotExist();
+        assertThat(processedFiles).isEmpty();
     }
 
     private void createTestImage(File file, int width, int height) throws IOException {
