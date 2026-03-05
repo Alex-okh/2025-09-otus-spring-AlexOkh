@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: Homework15 - integration
+  shell:
+    interactive:
+      enabled: false
